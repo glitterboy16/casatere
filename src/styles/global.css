@@ -13,6 +13,8 @@
   --arena: #e4dccb;       /* líneas y rellenos sobre claro */
   --sal-honda: color-mix(in oklch, var(--sal) 62%, var(--arena)); /* tarjetas sobre el crema */
   --sol: #e8a35a;         /* el sol del logo: escaso, solo acentos */
+  --sol-osc: #9a5a1c;     /* el sol cuando va como texto sobre claro (contraste AA) */
+  --abierto: #5fd4a0;     /* punto de "abierto ahora" */
   --tinta: #0d1c36;       /* texto sobre claro */
   --niebla: #5a6579;      /* texto secundario sobre claro */
   --bruma: rgba(255, 255, 255, .72);  /* texto secundario sobre marino */
@@ -114,10 +116,11 @@ p { text-wrap: pretty; }
   display: inline-flex; align-items: center; gap: 10px;
   font-size: var(--t-xs); font-weight: 600; letter-spacing: .24em; text-transform: uppercase;
   border-bottom: 1px solid currentColor; padding-bottom: 4px;
-  transition: gap .3s var(--ease), color .3s;
+  transition: color .3s;
 }
-.enlace:hover { gap: 16px; }
 .enlace svg { width: 14px; height: 14px; }
+.flecha { transition: transform .3s var(--ease); }
+.enlace:hover .flecha, a:hover > .flecha, .fuego:hover .flecha { transform: translateX(5px); }
 
 /* ---------- secciones ---------- */
 section { padding-block: clamp(88px, 11vw, 140px); }

@@ -363,12 +363,14 @@ function Visita() {
               {contacto.direccion}<br />
               {contacto.direccion2}
             </address>
-            <a className="enlace" href={contacto.mapsUrl} target="_blank" rel="noopener noreferrer">
-              {t('visita.comoLlegar')}<IconoFlecha />
-            </a>
-            <a className="enlace" href={contacto.instagram} target="_blank" rel="noopener noreferrer">
-              <IconoInstagram />{contacto.instagramUser}
-            </a>
+            <div className="visita-enlaces">
+              <a className="enlace" href={contacto.mapsUrl} target="_blank" rel="noopener noreferrer">
+                {t('visita.comoLlegar')}<IconoFlecha />
+              </a>
+              <a className="enlace" href={contacto.instagram} target="_blank" rel="noopener noreferrer">
+                <IconoInstagram />{contacto.instagramUser}
+              </a>
+            </div>
           </div>
         </div>
       </div>

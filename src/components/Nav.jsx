@@ -13,6 +13,9 @@ const IDIOMAS = [
   ['it', 'Italiano'],
 ]
 
+// Raíz de la web: / en Vercel, /casatere/ en GitHub Pages
+const BASE = import.meta.env.BASE_URL
+
 // Secciones de la home que marca el scroll-spy (en orden de aparición)
 const SECCIONES = ['cocina', 'casa', 'galeria', 'visita']
 
@@ -91,13 +94,13 @@ export default function Nav() {
       </Link>
 
       <div className="nav-links" id="navLinks">
-        <a href="/#cocina" className={activa('cocina')} onClick={close}>{t('nav.cocina')}</a>
-        <a href="/#casa" className={activa('casa')} onClick={close}>{t('nav.casa')}</a>
+        <a href={`${BASE}#cocina`} className={activa('cocina')} onClick={close}>{t('nav.cocina')}</a>
+        <a href={`${BASE}#casa`} className={activa('casa')} onClick={close}>{t('nav.casa')}</a>
         <Link to="/carta" className={pathname === '/carta' ? 'active' : ''} onClick={close}>
           {t('nav.carta')}
         </Link>
-        {hayGaleria && <a href="/#galeria" className={activa('galeria')} onClick={close}>{t('nav.galeria')}</a>}
-        <a href="/#visita" className={activa('visita')} onClick={close}>{t('nav.visita')}</a>
+        {hayGaleria && <a href={`${BASE}#galeria`} className={activa('galeria')} onClick={close}>{t('nav.galeria')}</a>}
+        <a href={`${BASE}#visita`} className={activa('visita')} onClick={close}>{t('nav.visita')}</a>
 
         <div className="lang" ref={langRef}>
           <button

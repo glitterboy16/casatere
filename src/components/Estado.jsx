@@ -29,7 +29,7 @@ export default function Estado({ className = '' }) {
     <p className={`estado ${e.abierto ? 'si' : 'no'} ${className}`.trim()}>
       <span className="estado-punto" aria-hidden="true" />
       <strong>{e.abierto ? t('estado.abierto') : t('estado.cerrado')}</strong>
-      {detalle && <span> · {detalle}</span>}
+      {detalle && <span className="estado-detalle">{detalle}</span>}
     </p>
   )
 }

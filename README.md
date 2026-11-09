@@ -39,6 +39,14 @@ VITE_SUPABASE_URL=https://<tu-proyecto>.supabase.co
 VITE_SUPABASE_ANON_KEY=<anon-key>
 ```
 
+## Publicación
+
+- **GitHub Pages:** https://glitterboy16.github.io/casatere/ — se despliega sola con cada push a `main`
+  (`.github/workflows/pages.yml`). Compila con `BASE_PATH=/casatere/` y copia `index.html` como
+  `404.html` para que funcionen rutas como `/carta`. Si se añaden los secrets `VITE_SUPABASE_URL` y
+  `VITE_SUPABASE_ANON_KEY` al repo, la versión de Pages también se conecta a Supabase.
+- **Vercel:** sin `BASE_PATH`, la web se sirve en la raíz (`vercel.json` reescribe a `index.html`).
+
 ## Puesta en marcha de Supabase
 
 1. Crear un proyecto nuevo en Supabase (no reutilizar el de El Bocadito).
