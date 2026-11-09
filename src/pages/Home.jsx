@@ -6,24 +6,71 @@ import { useAdmin, resolver } from '../admin/AdminContext'
 import { confirmarAccion } from '../lib/confirmar'
 import { hoyIndice, tramosATexto, textoATramos } from '../lib/horario'
 import {
-  useReveal, SectionHead, Olas,
-  IconoTel, IconoFlecha, IconoPin, IconoReloj, IconoInstagram, IconoX, IconoMas, IconoPez, IconoLlama,
+  useReveal, useCerca, SectionHead, Olas,
+  IconoTel, IconoFlecha, IconoPin, IconoReloj, IconoInstagram, IconoX, IconoMas,
 } from '../components/shared'
 import Mar from '../components/Mar'
 import Estado from '../components/Estado'
+import Cocina from '../components/Cocina'
 import logoBlanco from '../assets/logo-blanco.png'
 import firmaMarino from '../assets/firma-marino.png'
+import vistaLanzarote from '../assets/casa/casa-vista.webp'
+import vistaLanzaroteMovil from '../assets/casa/casa-vista-1200.webp'
 
 /* ─────────────────────────── HERO ─────────────────────────── */
+// Siete pulpos grabados (herramientas/grabados, todos con la cabeza arriba).
+// Cada carga de la web enseña uno, sin repetir el de la visita anterior.
+// Con /?pulpo=09 se fuerza uno concreto para revisarlo.
+// Cada pulpo en dos tamaños: el grande (escritorio retina) y uno de 1000 px para móvil.
+const PULPOS = {}
+for (const [ruta, url] of Object.entries(import.meta.glob('../assets/hero/pulpo-*.webp', { eager: true, import: 'default' }))) {
+  const [, id, ancho] = ruta.match(/pulpo-(\d+)(?:-(\d+))?\.webp$/)
+  PULPOS[id] = { ...PULPOS[id], [ancho ? 'movil' : 'grande']: url }
+}
+function elegirPulpo() {
+  const ids = Object.keys(PULPOS)
+  const pedido = new URLSearchParams(window.location.search).get('pulpo')
+  if (pedido && PULPOS[pedido]) return PULPOS[pedido]
+  let previo = null
+  try { previo = localStorage.getItem('casa-tere-pulpo') } catch { /* sin almacenamiento */ }
+  const opciones = ids.length > 1 ? ids.filter((id) => id !== previo) : ids
+  const id = opciones[Math.floor(Math.random() * opciones.length)]
+  try { localStorage.setItem('casa-tere-pulpo', id) } catch { /* sin almacenamiento */ }
+  return PULPOS[id]
+}
+// Una vez por carga: al volver a la portada sin recargar se mantiene el mismo
+const PULPO = elegirPulpo()
+
+// Dos direcciones en prueba (se elige una y se borra la otra):
+//   lámina    · (por defecto) el logo a la izquierda y un pulpo grabado enorme
+//               con la cabeza hacia la esquina de arriba a la derecha, saliéndose
+//               de la pantalla, y los brazos bajando hacia el mar.
+//   horizonte · (/?hero=horizonte) sin animales: el sol del logo se pone y su
+//               reflejo tiembla sobre el oleaje.
 function Hero() {
   const { t } = useTranslation()
   const { contacto } = useAdmin()
+  const { search } = useLocation()
+  const horizonte = new URLSearchParams(search).get('hero') === 'horizonte'
   return (
-    <header className="hero oscuro">
+    <header className={`hero oscuro ${horizonte ? 'hero-horizonte' : 'hero-lamina'}`}>
       <div className="hero-sol" aria-hidden="true" />
-      <Mar />
+      {!horizonte && (
+        // Antes que el mar: sus líneas pasan por encima y lo sumergen
+        <figure className="lamina-fig" aria-hidden="true">
+          <img
+            src={PULPO.grande}
+            srcSet={PULPO.movil ? `${PULPO.movil} 1000w, ${PULPO.grande} 1800w` : undefined}
+            sizes="(max-width: 960px) 78vw, min(52vw, 860px)"
+            alt=""
+            decoding="async"
+            fetchpriority="high"
+          />
+        </figure>
+      )}
+      <Mar reflejo={horizonte} calma=".hero-lema, .hero-ctas" />
       <div className="hero-inner">
-        <h1 className="sr-only">Casa Tere, restaurante en Playa Honda, Lanzarote</h1>
+        <h1 className="sr-only">{t('hero.titulo')}</h1>
         <img className="hero-logo" src={logoBlanco} alt="Casa Tere · Restaurante · Playa Honda · Nacho González" width="1023" height="547" fetchpriority="high" />
         <p className="hero-lema">{t('hero.lema')}</p>
         <div className="hero-ctas">
@@ -41,200 +88,43 @@ function Hero() {
   )
 }
 
-/* ──────────────────── PESCADO DEL DÍA (la pizarra) ──────────────────── */
-function Pescado() {
-  const { t, i18n } = useTranslation()
-  const {
-    admin, pescado, guardarPescado, campoTraducido, contacto,
-    editandoPescado, setEditandoPescado, guardar,
-  } = useAdmin()
-  const editando = admin && editandoPescado
-  const lang = i18n.language.slice(0, 2)
-  const L = resolver(lang)
-  const copyRef = useReveal()
-  const pizarraRef = useReveal()
-
-  const fecha = pescado.fecha
-    ? new Intl.DateTimeFormat(lang, { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Atlantic/Canary' }).format(new Date(pescado.fecha))
-    : null
-
-  const setItem = (id, fn) =>
-    guardarPescado((prev) => ({ ...prev, items: prev.items.map((it) => (it.id === id ? fn(it) : it)) }))
-
-  const añadir = () => {
-    guardarPescado((prev) => ({
-      ...prev,
-      items: [...prev.items, { id: `pez-${Date.now()}`, nombre: { es: 'Nuevo pescado' }, precio: '', estado: 'hay' }],
-    }))
-  }
-
-  const eliminar = async (id) => {
-    if (!(await confirmarAccion('¿Quitar este pescado de la pizarra?', { confirmar: 'Quitar' }))) return
-    guardarPescado((prev) => ({ ...prev, items: prev.items.filter((it) => it.id !== id) }))
-  }
-
-  return (
-    <section className="pescado" id="pescado">
-      <div className="wrap pescado-grid">
-        <div className="pescado-copy reveal" ref={copyRef}>
-          <span className="eyebrow izq">{t('pescado.eyebrow')}</span>
-          <h2>{t('pescado.titulo')}</h2>
-          <Olas />
-          <p>{t('pescado.intro')}</p>
-          <p className="pescado-prep">{t('pescado.preparaciones')}</p>
-          <a className="enlace" href={contacto.telHref}>{t('pescado.apartar')}<IconoFlecha /></a>
-        </div>
-
-        <div className="pizarra reveal" ref={pizarraRef}>
-          <div className="pizarra-cab">
-            <span>{fecha ? t('pescado.actualizado', { fecha }) : t('pescado.sinFecha')}</span>
-            <span>{t('pescado.porKilo')}</span>
-          </div>
-
-          {pescado.items.length === 0 && !editando && <p className="pizarra-vacia">{t('pescado.vacio')}</p>}
-
-          <ul className="pizarra-lista">
-            {pescado.items.map((it) =>
-              editando ? (
-                <li key={it.id} className="pez pez-admin">
-                  <input
-                    className="admin-input admin-osc"
-                    defaultValue={it.nombre?.es ?? ''}
-                    aria-label="Nombre del pescado"
-                    onBlur={(e) => {
-                      const v = e.target.value.trim()
-                      if (v && v !== it.nombre?.es) campoTraducido(v, (obj) => setItem(it.id, (p) => ({ ...p, nombre: obj })))
-                    }}
-                  />
-                  <input
-                    className="admin-input admin-osc pez-precio-input"
-                    defaultValue={it.precio}
-                    placeholder="€/kg"
-                    aria-label="Precio por kilo"
-                    onBlur={(e) => {
-                      const v = e.target.value.trim()
-                      if (v !== it.precio) setItem(it.id, (p) => ({ ...p, precio: v }))
-                    }}
-                  />
-                  <select
-                    className="admin-input admin-osc"
-                    value={it.estado}
-                    aria-label="Disponibilidad"
-                    onChange={(e) => setItem(it.id, (p) => ({ ...p, estado: e.target.value }))}
-                  >
-                    <option value="hay">Hay</option>
-                    <option value="pocas">Últimas piezas</option>
-                    <option value="agotado">Agotado</option>
-                  </select>
-                  <button className="mini-btn" title="Quitar" aria-label="Quitar" onClick={() => eliminar(it.id)}><IconoX /></button>
-                </li>
-              ) : (
-                <li key={it.id} className={`pez${it.estado === 'agotado' ? ' agotado' : ''}`}>
-                  <span className="pez-nombre">{L(it.nombre)}</span>
-                  {it.estado !== 'hay' && (
-                    <span className={`pez-tag ${it.estado}`}>{it.estado === 'pocas' ? t('pescado.pocas') : t('pescado.agotado')}</span>
-                  )}
-                  <span className="pez-guia" aria-hidden="true" />
-                  <span className="pez-precio">{it.precio || '—'}</span>
-                </li>
-              )
-            )}
-          </ul>
-
-          {admin && (
-            <div className="edit-bar edit-osc">
-              {editando ? (
-                <>
-                  <button className="btn btn-ghost" onClick={añadir}><IconoMas />Añadir pescado</button>
-                  <button className="btn" onClick={guardar}>Guardar</button>
-                </>
-              ) : (
-                <button className="btn btn-ghost" onClick={() => setEditandoPescado(true)}>Editar pizarra</button>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-    </section>
-  )
-}
-
 /* ─────────────────────────── LA CASA ─────────────────────────── */
-// Ilustración de línea: el horizonte de Playa Honda con el sol, las montañas
-// de la isla, el mar y dos gaviotas, en el mismo trazo que el logo.
-function Horizonte() {
-  return (
-    <svg className="horizonte" viewBox="0 0 400 500" fill="none" stroke="currentColor" strokeLinecap="round" aria-hidden="true">
-      <circle className="h-sol" cx="138" cy="250" r="52" strokeWidth="1.3" />
-      <rect x="70" y="250" width="140" height="60" fill="var(--panel)" stroke="none" />
-      <path d="M150 247 C190 240, 210 214, 236 206 C252 201, 262 210, 276 204 C296 196, 312 214, 336 228 C352 238, 372 244, 398 247" strokeWidth="1.1" />
-      <path d="M2 250 C120 247, 280 246, 398 249" strokeWidth="1.4" />
-      {Array.from({ length: 9 }, (_, i) => {
-        const y = 272 + i * 22 + i * i * 1.2
-        const amp = 3 + i * 1.4
-        return (
-          <path
-            key={i}
-            className="h-ola"
-            style={{ animationDelay: `${i * -0.7}s` }}
-            d={`M${-20 + (i % 2) * 30} ${y} C${90} ${y - amp}, ${190} ${y + amp}, ${300} ${y - amp * 0.4} S ${420} ${y + amp * 0.6}, ${440} ${y}`}
-            strokeWidth={0.8 + i * 0.12}
-          />
-        )
-      })}
-      <path className="h-gaviota" d="M250 120 C262 108, 274 110, 282 124 C290 112, 304 106, 320 112" strokeWidth="1.5" />
-      <path className="h-gaviota dos" d="M300 160 C308 152, 316 153, 321 162 C327 154, 336 150, 346 154" strokeWidth="1.2" />
-    </svg>
-  )
-}
-
+// Abre con una lámina: «Vues de Lancerote», vista de costa anónima del
+// siglo XVIII del Service hydrographique de la Marine (BnF, GE SH 18 PF 111
+// DIV 1 P 5 D): Lanzarote a 5 leguas y Fuerteventura a 11. Limpia de rumbos
+// y rosa de los vientos con herramientas/grabados.
 function Casa() {
   const { t } = useTranslation()
-  const ilusRef = useReveal()
+  const laminaRef = useReveal()
+  const [imgRef, cerca] = useCerca()
   const copyRef = useReveal()
   return (
     <section className="casa" id="casa">
-      <div className="wrap casa-grid">
-        <div className="casa-ilus reveal" ref={ilusRef}>
-          <Horizonte />
-          <span className="casa-coord">28°57′ N · 13°33′ O</span>
-        </div>
-        <div className="casa-copy reveal" ref={copyRef}>
-          <span className="eyebrow izq">{t('casa.eyebrow')}</span>
-          <h2>{t('casa.titulo')}</h2>
-          <Olas />
-          <p className="casa-lead">{t('casa.p1')}</p>
-          <p>{t('casa.p2')}</p>
-          <p>{t('casa.p3')}</p>
-          <div className="firma">
-            <img src={firmaMarino} alt="Nacho González" width="220" height="35" loading="lazy" />
-            <span>{t('casa.firma')}</span>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ─────────────────────── EL MAR Y LA BRASA ─────────────────────── */
-function Fuegos() {
-  const { t } = useTranslation()
-  const ref = useReveal()
-  const panel = (clave, Icono, ancla) => (
-    <Link to={`/carta#${ancla}`} className="fuego">
-      <Icono className="fuego-icono" />
-      <h3>{t(`fuegos.${clave}`)}</h3>
-      <p>{t(`fuegos.${clave}Txt`)}</p>
-      <span className="enlace">{t('fuegos.ver')}<IconoFlecha /></span>
-    </Link>
-  )
-  return (
-    <section className="fuegos oscuro" id="cocina">
       <div className="wrap">
-        <SectionHead eyebrow={t('fuegos.eyebrow')} title={t('fuegos.titulo')} />
-        <div className="fuegos-grid reveal" ref={ref}>
-          {panel('mar', IconoPez, 'mar')}
-          {panel('brasa', IconoLlama, 'brasa')}
+        <figure className="casa-lamina reveal" ref={laminaRef}>
+          <div
+            ref={imgRef}
+            className={`casa-lamina-img${cerca ? '' : ' espera'}`}
+            style={cerca ? { '--src': `url(${vistaLanzarote})`, '--src-movil': `url(${vistaLanzaroteMovil})` } : undefined}
+            aria-hidden="true"
+          />
+          <figcaption>{t('casa.grabado')}</figcaption>
+        </figure>
+        <div className="casa-copy reveal" ref={copyRef}>
+          <div className="casa-cab">
+            <span className="eyebrow izq">{t('casa.eyebrow')}</span>
+            <h2>{t('casa.titulo')}</h2>
+            <Olas />
+            <p className="casa-lead">{t('casa.p1')}</p>
+          </div>
+          <div className="casa-texto">
+            <p>{t('casa.p2')}</p>
+            <p>{t('casa.p3')}</p>
+            <div className="firma">
+              <img src={firmaMarino} alt="Nacho González" width="220" height="35" loading="lazy" />
+              <span>{t('casa.firma')}</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -387,6 +277,7 @@ function Visita() {
   const dias = t('dias', { returnObjects: true })
   const hoy = hoyIndice()
   const ref = useReveal()
+  const semana = horario ?? Array.from({ length: 7 }, () => [])
 
   const editarDia = (i, texto) => {
     const tramos = textoATramos(texto)
@@ -394,7 +285,7 @@ function Visita() {
       toast.error('Escribe el horario así: 12:00–16:00, 19:00–23:00 (o «Cerrado»)')
       return
     }
-    guardarHorario((prev) => prev.map((d, j) => (j === i ? tramos : d)))
+    guardarHorario((prev) => (prev ?? Array.from({ length: 7 }, () => [])).map((d, j) => (j === i ? tramos : d)))
   }
 
   return (
@@ -412,6 +303,9 @@ function Visita() {
           <div className="visita-bloque">
             <h3><IconoReloj />{t('visita.horario')}</h3>
             <Estado />
+            {!horario && !editando ? (
+              <p>{t('visita.sinHorario')}</p>
+            ) : (
             <table className="horario">
               <tbody>
                 {dias.map((nombre, i) => (
@@ -424,12 +318,12 @@ function Visita() {
                       {editando ? (
                         <input
                           className="admin-input"
-                          defaultValue={horario[i]?.length ? tramosATexto(horario[i]) : 'Cerrado'}
+                          defaultValue={semana[i]?.length ? tramosATexto(semana[i]) : 'Cerrado'}
                           aria-label={`Horario del ${nombre}`}
                           onBlur={(e) => editarDia(i, e.target.value)}
                         />
-                      ) : horario[i]?.length ? (
-                        tramosATexto(horario[i])
+                      ) : semana[i]?.length ? (
+                        tramosATexto(semana[i])
                       ) : (
                         <span className="cerrado">{t('visita.cerrado')}</span>
                       )}
@@ -438,6 +332,7 @@ function Visita() {
                 ))}
               </tbody>
             </table>
+            )}
           </div>
 
           <div className="visita-bloque visita-reservas oscuro">
@@ -497,9 +392,8 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <Pescado />
+      <Cocina />
       <Casa />
-      <Fuegos />
       <Galeria />
       <Visita />
     </>

@@ -9,6 +9,8 @@ import { CONTACTO } from '../data/casa'
 
 // ── Exporta la carta a PDF con la estética de Casa Tere ──────────────────
 // A4 en blanco, tinta azul marino, Bodoni Moda + Montserrat, logo arriba.
+// Capítulos numerados, columnas de ración y media, alérgenos por número con
+// su leyenda al final y un punto dorado (el sol) en lo que recomienda la casa.
 
 const TRADUCCIONES = { es, en, de, fr, it }
 
@@ -16,6 +18,7 @@ const MARINO = [2, 30, 80]
 const TINTA = [13, 28, 54]
 const NIEBLA = [90, 101, 121]
 const ARENA = [228, 220, 203]
+const SOL = [232, 163, 90]
 
 const A4 = { w: 210, h: 297 }
 const M = 22
@@ -68,6 +71,12 @@ export async function exportarCartaPdf(carta, lang) {
     doc.setCharSpace(0)
   }
 
+  // El sol del logo, como punto dorado
+  const sol = (x, yy) => {
+    doc.setFillColor(...SOL)
+    doc.circle(x, yy, 1.1, 'F')
+  }
+
   const logoW = 70
   const logoH = logoW * (547 / 1023)
   doc.addImage(r.logo, 'PNG', (A4.w - logoW) / 2, 16, logoW, logoH)
@@ -81,8 +90,19 @@ export async function exportarCartaPdf(carta, lang) {
     }
   }
 
-  for (const cat of carta) {
-    necesita(28)
+  let haySol = false
+  let hayAlergenos = false
+
+  carta.forEach((cat, ci) => {
+    const conMedia = cat.platos.some((p) => p.media)
+    const xMedia = A4.w - M
+    const xRacion = conMedia ? A4.w - M - 18 : A4.w - M
+
+    necesita(conMedia ? 40 : 34)
+    doc.setFont('Montserrat', 'medium').setFontSize(7).setTextColor(...SOL).setCharSpace(1)
+    doc.text(String(ci + 1).padStart(2, '0'), A4.w / 2, y, { align: 'center' })
+    doc.setCharSpace(0)
+    y += 6.5
     doc.setFont('Bodoni', 'normal').setFontSize(17).setTextColor(...MARINO)
     doc.text(String(L(cat.titulo)), A4.w / 2, y, { align: 'center' })
     doc.setDrawColor(...ARENA).setLineWidth(0.3)
@@ -97,27 +117,45 @@ export async function exportarCartaPdf(carta, lang) {
       y += lineas.length * 4.4 + 4
     }
 
+    if (conMedia) {
+      doc.setFont('Montserrat', 'medium').setFontSize(6.3).setTextColor(...NIEBLA).setCharSpace(0.6)
+      doc.text(String(tr.carta.racion).toUpperCase(), xRacion, y, { align: 'right' })
+      doc.text(String(tr.carta.media).toUpperCase(), xMedia, y, { align: 'right' })
+      doc.setCharSpace(0)
+      y += 5
+    }
+
     for (const p of cat.platos) {
       const nombre = String(L(p.nombre) ?? '')
       const precio = p.precio ? String(L(p.precio)) : null
+      const media = p.media ? String(L(p.media)) : null
       const desc = p.desc ? String(L(p.desc)) : null
+      const alerg = p.alergenos?.length ? p.alergenos.join(' · ') : null
+      const x = M + (p.sol ? 5 : 0)
+      if (p.sol) haySol = true
+      if (alerg) hayAlergenos = true
 
       doc.setFont('Montserrat', 'medium').setFontSize(9)
-      const anchoPrecio = precio ? doc.getTextWidth(precio) + 6 : 0
+      const anchoPrecios = precio ? A4.w - M - xRacion + doc.getTextWidth(precio) + 6 : 0
       doc.setFont('Bodoni', 'normal').setFontSize(12)
-      const lineasNombre = doc.splitTextToSize(nombre, A4.w - 2 * M - anchoPrecio - 8)
+      const lineasNombre = doc.splitTextToSize(nombre, A4.w - M - x - anchoPrecios - 8)
       doc.setFont('Montserrat', 'normal').setFontSize(8.2)
-      const lineasDesc = desc ? doc.splitTextToSize(desc, A4.w - 2 * M - 14) : []
-      necesita(lineasNombre.length * 5.2 + lineasDesc.length * 3.9 + 5)
+      const lineasDesc = desc ? doc.splitTextToSize(desc, A4.w - M - x - 14) : []
+      necesita(lineasNombre.length * 5.2 + lineasDesc.length * 3.9 + (alerg ? 3.6 : 0) + 5)
 
+      if (p.sol) sol(M + 1.2, y - 1.2)
       doc.setFont('Bodoni', 'normal').setFontSize(12).setTextColor(...TINTA)
-      doc.text(lineasNombre, M, y)
+      doc.text(lineasNombre, x, y)
       if (precio) {
         doc.setFont('Montserrat', 'medium').setFontSize(9).setTextColor(...MARINO)
-        doc.text(precio, A4.w - M, y, { align: 'right' })
+        doc.text(precio, xRacion, y, { align: 'right' })
+        if (media) {
+          doc.setTextColor(...NIEBLA)
+          doc.text(media, xMedia, y, { align: 'right' })
+        }
+        const inicioPrecio = xRacion - doc.getTextWidth(precio) - 3
         doc.setFont('Bodoni', 'normal').setFontSize(12)
-        const finNombre = M + doc.getTextWidth(lineasNombre[0]) + 3
-        const inicioPrecio = A4.w - M - anchoPrecio
+        const finNombre = x + doc.getTextWidth(lineasNombre[0]) + 3
         if (inicioPrecio > finNombre + 4) {
           doc.setDrawColor(...ARENA).setLineWidth(0.25)
           doc.setLineDashPattern([0.3, 1.3], 0)
@@ -128,17 +166,42 @@ export async function exportarCartaPdf(carta, lang) {
       y += lineasNombre.length * 5.2
       if (lineasDesc.length) {
         doc.setFont('Montserrat', 'normal').setFontSize(8.2).setTextColor(...NIEBLA)
-        doc.text(lineasDesc, M, y - 0.4)
+        doc.text(lineasDesc, x, y - 0.4)
         y += lineasDesc.length * 3.9
+      }
+      if (alerg) {
+        doc.setFont('Montserrat', 'normal').setFontSize(6.6).setTextColor(...NIEBLA)
+        doc.text(alerg, x, y - 0.4)
+        y += 3.6
       }
       y += 3.4
     }
     y += 8
-  }
+  })
 
-  necesita(12)
+  // Cierre: leyenda del sol, leyenda de alérgenos, nota y despedida
+  necesita(46)
+  if (haySol) {
+    doc.setFont('Montserrat', 'medium').setFontSize(6.8).setTextColor(...NIEBLA).setCharSpace(0.8)
+    const texto = String(tr.carta.casa).toUpperCase()
+    const ancho = doc.getTextWidth(texto) + texto.length * 0.8
+    doc.text(texto, A4.w / 2 + 2, y, { align: 'center' })
+    sol(A4.w / 2 + 2 - ancho / 2 - 3.2, y - 1.1)
+    doc.setCharSpace(0)
+    y += 8
+  }
+  if (hayAlergenos) {
+    doc.setFont('Montserrat', 'normal').setFontSize(6.8).setTextColor(...NIEBLA)
+    const leyenda = `${tr.carta.alergenos}: ${tr.carta.alergenosLista.map((n, i) => `${i + 1} ${n}`).join(' · ')}`
+    const lineas = doc.splitTextToSize(leyenda, A4.w - 2 * M)
+    doc.text(lineas, A4.w / 2, y, { align: 'center' })
+    y += lineas.length * 3.6 + 5
+  }
   doc.setFont('Bodoni', 'italic').setFontSize(9).setTextColor(...NIEBLA)
   doc.text(`${tr.carta.nota1}${tr.carta.notaLink}${tr.carta.nota2}`, A4.w / 2, y + 2, { align: 'center', maxWidth: A4.w - 2 * M })
+  y += 13
+  doc.setFont('Bodoni', 'italic').setFontSize(12).setTextColor(...MARINO)
+  doc.text(String(tr.carta.despedida), A4.w / 2, y, { align: 'center' })
   pie()
 
   doc.save(`Casa-Tere-Carta-${lang.toUpperCase()}.pdf`)

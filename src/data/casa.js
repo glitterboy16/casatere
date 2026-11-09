@@ -14,51 +14,8 @@ export const CONTACTO = {
 
 // Horario semanal: índice 0 = lunes … 6 = domingo.
 // Cada día es una lista de tramos ['HH:MM', 'HH:MM']; lista vacía = cerrado.
-// PENDIENTE: confirmar el horario real con Nacho.
-export const HORARIO_BASE = [
-  [['12:00', '23:00']],
-  [['12:00', '23:00']],
-  [['12:00', '23:00']],
-  [['12:00', '23:00']],
-  [['12:00', '23:00']],
-  [['12:00', '23:00']],
-  [['12:00', '23:00']],
-]
+// Horario confirmado por Angel el 2026-11-03: lunes cerrado, de martes a
+// domingo de 11:00 a 23:30. Nacho lo cambia desde el modo edición.
+const ABIERTO = [['11:00', '23:30']]
+export const HORARIO_BASE = [[], ABIERTO, ABIERTO, ABIERTO, ABIERTO, ABIERTO, ABIERTO]
 
-// Pizarra del pescado del día. `estado`: 'hay' | 'pocas' | 'agotado'.
-// PENDIENTE: son ejemplos; Nacho la rellena cada día desde la web.
-export const PESCADO_BASE = {
-  fecha: null,
-  items: [
-    {
-      id: 'cherne',
-      nombre: { es: 'Cherne', en: 'Wreckfish', de: 'Wrackbarsch', fr: 'Cernier', it: 'Cernia di fondale' },
-      precio: '',
-      estado: 'hay',
-    },
-    {
-      id: 'sama',
-      nombre: { es: 'Sama roquera', en: 'Pink dentex', de: 'Zahnbrasse', fr: 'Denté rose', it: 'Dentice rosa' },
-      precio: '',
-      estado: 'hay',
-    },
-    {
-      id: 'vieja',
-      nombre: { es: 'Vieja', en: 'Parrotfish', de: 'Papageifisch', fr: 'Poisson-perroquet', it: 'Pesce pappagallo' },
-      precio: '',
-      estado: 'pocas',
-    },
-    {
-      id: 'bocinegro',
-      nombre: { es: 'Bocinegro', en: 'Red porgy', de: 'Sackbrasse', fr: 'Pagre', it: 'Pagro' },
-      precio: '',
-      estado: 'hay',
-    },
-    {
-      id: 'abadejo',
-      nombre: { es: 'Abadejo', en: 'Island grouper', de: 'Inselzackenbarsch', fr: 'Mérou des îles', it: 'Cernia delle isole' },
-      precio: '',
-      estado: 'agotado',
-    },
-  ],
-}

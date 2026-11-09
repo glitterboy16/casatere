@@ -1,0 +1,5 @@
+# No hace falta subir a Vercel: se compila allí desde las fuentes
+herramientas
+dist
+node_modules
+.impeccable.md

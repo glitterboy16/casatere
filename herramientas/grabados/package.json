@@ -1,0 +1,14 @@
+{
+  "name": "grabador",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Convierte grabados antiguos de dominio público en ilustraciones web de un solo color sobre transparente.",
+  "type": "module",
+  "scripts": {
+    "buscar": "node buscar.mjs",
+    "grabar": "node grabar.mjs casa-tere.json"
+  },
+  "dependencies": {
+    "sharp": "^0.34.4"
+  }
+}

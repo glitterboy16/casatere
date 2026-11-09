@@ -1,0 +1,490 @@
+{
+  "agente": "CasaTereGrabador/1.0 (https://casatere.es)",
+  "tinta": "#ffffff",
+  "fondoPrevia": "#021e50",
+  "peso": 0.72,
+  "limpieza": 0.1,
+  "png": false,
+  "piezas": [
+    {
+      "nombre": "ensaladas",
+      "salida": "../../src/assets/carta",
+      "fuente": "https://upload.wikimedia.org/wikipedia/commons/9/90/Laitue_imp%C3%A9riale_Vilmorin-Andrieux_1904.png",
+      "recorte": [
+        0.05,
+        0.03,
+        0.95,
+        0.81
+      ],
+      "max": 1000,
+      "credito": {
+        "obra": "Laitue impériale, Les plantes potagères",
+        "autor": "Vilmorin-Andrieux & Cie",
+        "fecha": "1904",
+        "licencia": "Dominio público",
+        "pagina": "https://commons.wikimedia.org/wiki/File:Laitue_imp%C3%A9riale_Vilmorin-Andrieux_1904.png"
+      }
+    },
+    {
+      "nombre": "entrantes",
+      "salida": "../../src/assets/carta",
+      "fuente": "https://upload.wikimedia.org/wikipedia/commons/f/fd/Champignon_de_couche_Vilmorin-Andrieux_1904.png",
+      "recorte": [
+        0.02,
+        0.02,
+        0.98,
+        0.885
+      ],
+      "max": 1000,
+      "credito": {
+        "obra": "Champignon de couche, Les plantes potagères",
+        "autor": "G. Laplante para Vilmorin-Andrieux",
+        "fecha": "1904",
+        "licencia": "Dominio público",
+        "pagina": "https://commons.wikimedia.org/wiki/File:Champignon_de_couche_Vilmorin-Andrieux_1904.png"
+      }
+    },
+    {
+      "nombre": "pescados",
+      "salida": "../../src/assets/carta",
+      "fuente": "https://upload.wikimedia.org/wikipedia/commons/0/00/PSM_V14_D360_Octopus_or_devil_fish_octopus_vulgaris.png",
+      "max": 1000,
+      "credito": {
+        "obra": "Octopus or devil fish, Popular Science Monthly vol. 14",
+        "autor": "Anónimo",
+        "fecha": "1878–1879",
+        "licencia": "Dominio público",
+        "pagina": "https://commons.wikimedia.org/wiki/File:PSM_V14_D360_Octopus_or_devil_fish_octopus_vulgaris.png"
+      }
+    },
+    {
+      "nombre": "carnes",
+      "salida": "../../src/assets/carta",
+      "fuente": "https://upload.wikimedia.org/wikipedia/commons/3/38/Kop_van_een_koe_Koeienportretten_%28serietitel%29%2C_RP-P-1886-A-10019.jpg",
+      "recorte": [
+        0.26,
+        0.21,
+        0.73,
+        0.662
+      ],
+      "limpieza": 0.2,
+      "max": 1000,
+      "credito": {
+        "obra": "Kop van een koe (Koeienportretten), RP-P-1886-A-10019",
+        "autor": "Firmado «F.L.H.», Rijksmuseum",
+        "fecha": "1817–1887",
+        "licencia": "CC0",
+        "pagina": "https://commons.wikimedia.org/wiki/File:Kop_van_een_koe_Koeienportretten_(serietitel),_RP-P-1886-A-10019.jpg"
+      }
+    },
+    {
+      "nombre": "postres",
+      "salida": "../../src/assets/carta",
+      "fuente": "https://archive.org/download/b21526035_0002/page/n112_w4000.jpg",
+      "recorte": [
+        0.28,
+        0.535,
+        0.58,
+        0.905
+      ],
+      "aplanar": 0.02,
+      "max": 1000,
+      "limpieza": 0.2,
+      "zonas": [
+        {
+          "rect": [
+            0.2,
+            0.81,
+            0.245,
+            0.86
+          ],
+          "limpieza": 1
+        }
+      ],
+      "credito": {
+        "obra": "Le Pâtissier royal parisien, t. 2, lám. 33, fig. 5",
+        "autor": "Marie-Antoine Carême",
+        "fecha": "1828",
+        "licencia": "Dominio público",
+        "pagina": "https://archive.org/details/b21526035_0002/page/n112"
+      }
+    },
+    {
+      "nombre": "portada-pescados",
+      "salida": "../../src/assets/portada",
+      "fuente": "https://upload.wikimedia.org/wikipedia/commons/e/e5/FMIB_51003_Milner%27s_Pagellus.jpeg",
+      "recorte": [
+        0.06,
+        0.03,
+        0.98,
+        0.822
+      ],
+      "aplanar": true,
+      "max": 1100,
+      "peso": 0.78,
+      "limpieza": 0.14,
+      "calidad": 70,
+      "zonas": [
+        {
+          "rect": [
+            0.69,
+            0.81,
+            0.85,
+            0.88
+          ],
+          "limpieza": 1
+        },
+        {
+          "rect": [
+            0.476,
+            0.765,
+            0.494,
+            0.86
+          ],
+          "limpieza": 1
+        },
+        {
+          "rect": [
+            0.8,
+            0,
+            1,
+            0.03
+          ],
+          "limpieza": 1
+        }
+      ],
+      "credito": {
+        "obra": "Pagellus milneri, The Fisheries and Fishery Industries of the United States (lám. 136)",
+        "autor": "H. L. Todd (dib.), G. B. Goode",
+        "fecha": "1884",
+        "licencia": "Dominio público",
+        "pagina": "https://commons.wikimedia.org/wiki/File:FMIB_51003_Milner%27s_Pagellus.jpeg"
+      }
+    },
+    {
+      "nombre": "portada-entrantes",
+      "salida": "../../src/assets/portada",
+      "fuente": "https://upload.wikimedia.org/wikipedia/commons/7/71/Ail_blanc_Vilmorin-Andrieux_1904.png",
+      "recorte": [
+        0.02,
+        0.02,
+        0.98,
+        0.84
+      ],
+      "max": 1100,
+      "peso": 0.8,
+      "limpieza": 0.12,
+      "calidad": 70,
+      "credito": {
+        "obra": "Ail blanc ou commun, Les plantes potagères",
+        "autor": "Vilmorin-Andrieux & Cie",
+        "fecha": "1904",
+        "licencia": "Dominio público",
+        "pagina": "https://commons.wikimedia.org/wiki/File:Ail_blanc_Vilmorin-Andrieux_1904.png"
+      }
+    },
+    {
+      "nombre": "portada-carnes",
+      "salida": "../../src/assets/portada",
+      "fuente": "https://upload.wikimedia.org/wikipedia/commons/4/4b/Stier%2C_RP-P-1885-A-8627.jpg",
+      "recorte": [
+        0.04,
+        0.06,
+        0.96,
+        0.94
+      ],
+      "aplanar": true,
+      "max": 1100,
+      "peso": 0.8,
+      "limpieza": 0.14,
+      "calidad": 70,
+      "credito": {
+        "obra": "Stier (RP-P-1885-A-8627), según «De Stier» de Paulus Potter (1647)",
+        "autor": "Johannes Mock",
+        "fecha": "1824",
+        "licencia": "CC0 (Rijksmuseum)",
+        "pagina": "https://commons.wikimedia.org/wiki/File:Stier,_RP-P-1885-A-8627.jpg"
+      }
+    },
+    {
+      "nombre": "moldura-olas",
+      "salida": "molduras",
+      "fuente": "https://upload.wikimedia.org/wikipedia/commons/b/b3/Drie_lijsten_Ornements_pour_moutures_et_cadres_%28titel_op_object%29_Lijsten_%28serietitel%29_45e_Cahier_%28serietitel_op_object%29%2C_RP-P-1964-3986.jpg",
+      "recorte": [
+        0.3,
+        0.4799,
+        0.812,
+        0.5176
+      ],
+      "aplanar": true,
+      "max": 3000,
+      "peso": 0.8,
+      "limpieza": 0.14,
+      "calidad": 90,
+      "credito": {
+        "obra": "Ornements pour moulures et cadres, 45e cahier, nº 269 (RP-P-1964-3986)",
+        "autor": "J.-F. Boucher fils (dib.), Pelletier (grab.)",
+        "fecha": "1772–1779",
+        "licencia": "CC0",
+        "pagina": "https://commons.wikimedia.org/wiki/File:Drie_lijsten_Ornements_pour_moutures_et_cadres_(titel_op_object)_Lijsten_(serietitel)_45e_Cahier_(serietitel_op_object),_RP-P-1964-3986.jpg"
+      },
+      "tinta": "#ffffff"
+    },
+    {
+      "nombre": "casa-vista",
+      "salida": "../../src/assets/casa",
+      "fuente": "https://upload.wikimedia.org/wikipedia/commons/b/b2/Vues_de_Lancerote_-_btv1b53153360p.jpg",
+      "recorte": [
+        0.09,
+        0.625,
+        0.887,
+        0.943
+      ],
+      "aplanar": true,
+      "max": 2400,
+      "peso": 0.8,
+      "limpieza": 0.14,
+      "calidad": 72,
+      "zonas": [
+        {
+          "rect": [
+            0.095,
+            0.815,
+            0.205,
+            0.982
+          ],
+          "limpieza": 1,
+          "clonar": "derecha"
+        },
+        {
+          "rect": [
+            0,
+            0.982,
+            1,
+            1
+          ],
+          "limpieza": 1
+        }
+      ],
+      "credito": {
+        "obra": "Vues de Lancerote (vista de costa, Service hydrographique de la Marine, GE SH 18 PF 111 DIV 1 P 5 D)",
+        "autor": "Anónimo",
+        "fecha": "s. XVIII",
+        "licencia": "Dominio público (BnF)",
+        "pagina": "https://commons.wikimedia.org/wiki/File:Vues_de_Lancerote_-_btv1b53153360p.jpg"
+      },
+      "trazos": [
+        {
+          "de": [
+            0.9919,
+            0.2821
+          ],
+          "a": [
+            0.0895,
+            0.9196
+          ],
+          "ancho": 0.0042
+        },
+        {
+          "de": [
+            0.9945,
+            0.2821
+          ],
+          "a": [
+            0.0679,
+            0.9196
+          ],
+          "ancho": 0.0042
+        }
+      ],
+      "rumbos": [
+        {
+          "region": [
+            0.04,
+            0.3,
+            0.58,
+            0.95
+          ],
+          "angulos": [
+            38,
+            52
+          ],
+          "ancho": 0.0045,
+          "max": 5,
+          "umbral": 0.45
+        }
+      ],
+      "variantes": [
+        1200
+      ],
+      "motas": {
+        "region": [
+          0,
+          0,
+          1,
+          0.62
+        ],
+        "area": 60,
+        "radio": 4
+      }
+    },
+    {
+      "nombre": "pulpo-01",
+      "salida": "../../src/assets/hero",
+      "max": 1800,
+      "peso": 0.82,
+      "limpieza": 0.1,
+      "calidad": 68,
+      "aplanar": true,
+      "fuente": "https://upload.wikimedia.org/wikipedia/commons/6/62/Octopusvulgaris.jpg",
+      "girar": 0,
+      "credito": {
+        "obra": "Octopus vulgaris",
+        "autor": "Ernst Haeckel",
+        "fecha": "1904",
+        "licencia": "Dominio público",
+        "pagina": "https://commons.wikimedia.org/wiki/File:Octopusvulgaris.jpg"
+      },
+      "ampliar": true,
+      "variantes": [
+        1000
+      ]
+    },
+    {
+      "nombre": "pulpo-02",
+      "salida": "../../src/assets/hero",
+      "max": 1800,
+      "peso": 0.82,
+      "limpieza": 0.1,
+      "calidad": 68,
+      "aplanar": true,
+      "fuente": "https://upload.wikimedia.org/wikipedia/commons/f/f4/Octopusvulgaris1.jpg",
+      "girar": 180,
+      "credito": {
+        "obra": "Octopus vulgaris (vista ventral)",
+        "autor": "Ernst Haeckel",
+        "fecha": "1904",
+        "licencia": "Dominio público",
+        "pagina": "https://commons.wikimedia.org/wiki/File:Octopusvulgaris1.jpg"
+      },
+      "ampliar": true,
+      "variantes": [
+        1000
+      ]
+    },
+    {
+      "nombre": "pulpo-03",
+      "salida": "../../src/assets/hero",
+      "max": 1800,
+      "peso": 0.82,
+      "limpieza": 0.1,
+      "calidad": 68,
+      "aplanar": true,
+      "fuente": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Benthoctopus_levis1.jpg",
+      "recorte": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "girar": 180,
+      "credito": {
+        "obra": "Benthoctopus levis, Report on the Cephalopoda collected by H.M.S. Challenger",
+        "autor": "A. Pollock (lit.), W. E. Hoyle",
+        "fecha": "1886",
+        "licencia": "Dominio público",
+        "pagina": "https://commons.wikimedia.org/wiki/File:Benthoctopus_levis1.jpg"
+      },
+      "variantes": [
+        1000
+      ]
+    },
+    {
+      "nombre": "pulpo-09",
+      "salida": "../../src/assets/hero",
+      "max": 1800,
+      "peso": 0.82,
+      "limpieza": 0.1,
+      "calidad": 68,
+      "aplanar": true,
+      "fuente": "https://upload.wikimedia.org/wikipedia/commons/1/15/Octopus_bimaculatus.jpg",
+      "girar": 180,
+      "credito": {
+        "obra": "Octopus bimaculatus",
+        "autor": "United States Fish Commission",
+        "fecha": "1910",
+        "licencia": "Dominio público",
+        "pagina": "https://commons.wikimedia.org/wiki/File:Octopus_bimaculatus.jpg"
+      },
+      "variantes": [
+        1000
+      ]
+    },
+    {
+      "nombre": "pulpo-10",
+      "salida": "../../src/assets/hero",
+      "max": 1800,
+      "peso": 0.82,
+      "limpieza": 0.1,
+      "calidad": 68,
+      "aplanar": true,
+      "fuente": "https://upload.wikimedia.org/wikipedia/commons/e/e8/Octopus_bimaculatus1.jpg",
+      "girar": 180,
+      "credito": {
+        "obra": "Octopus bimaculatus",
+        "autor": "United States Fish Commission",
+        "fecha": "1910",
+        "licencia": "Dominio público",
+        "pagina": "https://commons.wikimedia.org/wiki/File:Octopus_bimaculatus1.jpg"
+      },
+      "variantes": [
+        1000
+      ]
+    },
+    {
+      "nombre": "pulpo-15",
+      "salida": "../../src/assets/hero",
+      "max": 1800,
+      "peso": 0.82,
+      "limpieza": 0.1,
+      "calidad": 68,
+      "aplanar": true,
+      "fuente": "https://upload.wikimedia.org/wikipedia/commons/a/ac/Octopus_salutii_Merculiano.jpg",
+      "girar": 180,
+      "credito": {
+        "obra": "Octopus salutii, I Cefalopodi viventi nel Golfo di Napoli",
+        "autor": "Comingio Merculiano (en G. Jatta)",
+        "fecha": "1896",
+        "licencia": "Dominio público",
+        "pagina": "https://commons.wikimedia.org/wiki/File:Octopus_salutii_Merculiano.jpg"
+      },
+      "variantes": [
+        1000
+      ]
+    },
+    {
+      "nombre": "pulpo-20",
+      "salida": "../../src/assets/hero",
+      "max": 1800,
+      "peso": 0.82,
+      "limpieza": 0.1,
+      "calidad": 68,
+      "aplanar": true,
+      "fuente": "https://upload.wikimedia.org/wikipedia/commons/0/00/PSM_V14_D360_Octopus_or_devil_fish_octopus_vulgaris.png",
+      "girar": -135,
+      "credito": {
+        "obra": "Octopus or devil fish, Popular Science Monthly vol. 14",
+        "autor": "Anónimo",
+        "fecha": "1878–1879",
+        "licencia": "Dominio público",
+        "pagina": "https://commons.wikimedia.org/wiki/File:PSM_V14_D360_Octopus_or_devil_fish_octopus_vulgaris.png"
+      },
+      "ampliar": true,
+      "variantes": [
+        1000
+      ]
+    }
+  ],
+  "alfa": 100,
+  "nitidez": 0.5
+}

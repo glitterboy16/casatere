@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 // Activa las animaciones de entrada solo si el navegador puede hacerlas
 if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
@@ -29,6 +29,25 @@ export function useReveal() {
     return () => io.disconnect()
   }, [])
   return ref
+}
+
+/**
+ * true en cuanto el elemento se acerca a la pantalla. Sirve para cargar tarde
+ * los grabados pesados que van como máscara CSS (no admiten loading="lazy").
+ * Uso: const [ref, cerca] = useCerca()
+ */
+export function useCerca(margen = '600px') {
+  const ref = useRef(null)
+  const [cerca, setCerca] = useState(() => typeof IntersectionObserver === 'undefined')
+  useEffect(() => {
+    if (cerca || !ref.current) return
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setCerca(true); io.disconnect() }
+    }, { rootMargin: margen })
+    io.observe(ref.current)
+    return () => io.disconnect()
+  }, [cerca, margen])
+  return [ref, cerca]
 }
 
 /** Las tres pinceladas de ola del logo: filete de sección de la marca. */
@@ -71,3 +90,16 @@ export const IconoX = svg(<path d="M6 6l12 12M18 6L6 18" />)
 export const IconoMas = svg(<path d="M12 5v14M5 12h14" />)
 export const IconoPez = svg(<><path d="M3 12c3-4.5 7.5-6 12-4.5 2 .7 3.6 2.2 4.5 4.5-.9 2.3-2.5 3.8-4.5 4.5C10.5 18 6 16.5 3 12z" /><path d="M3 12l-1.5-3M3 12l-1.5 3" /><circle cx="15.5" cy="11" r=".8" fill="currentColor" /></>)
 export const IconoLlama = svg(<path d="M12 21c-3.9 0-6.5-2.6-6.5-6.2 0-3.3 2.3-5.3 3.6-7.6.4 1.6 1.2 2.6 2.2 3.2.2-3.1 1.6-5.6 3.9-7.4-.2 2.9.9 5 2.4 6.9 1.2 1.5 1.9 3.1 1.9 4.9 0 3.6-2.6 6.2-6.5 6.2zM12 21c-1.6 0-2.7-1.1-2.7-2.6 0-1.6 1.2-2.5 2.7-4.2 1.5 1.7 2.7 2.6 2.7 4.2 0 1.5-1.1 2.6-2.7 2.6z" />)
+
+/** El sol del logo, posado en el horizonte: señala lo que recomienda la casa. */
+export const IconoSol = svg(<><path d="M5.5 14a6.5 6.5 0 0 1 13 0" /><path d="M2.5 14h19" /><path d="M7.5 18.2c3-1.3 6-1.3 9 0" /></>)
+
+/** Las dos gaviotas del logo, para cabeceras. Planean con la animación de la casa. */
+export function Gaviotas({ className = '' }) {
+  return (
+    <svg className={`gaviotas ${className}`.trim()} viewBox="0 0 120 60" fill="none" stroke="currentColor" strokeLinecap="round" aria-hidden="true">
+      <path className="h-gaviota" d="M8 30 C20 18, 32 20, 40 34 C48 22, 62 16, 78 22" strokeWidth="1.5" />
+      <path className="h-gaviota dos" d="M70 50 C78 42, 86 43, 91 52 C97 44, 106 40, 116 44" strokeWidth="1.2" />
+    </svg>
+  )
+}

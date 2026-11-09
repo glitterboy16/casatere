@@ -3,7 +3,7 @@
 -- Es seguro volver a ejecutarlo (idempotente).
 
 -- Un documento JSON por sección editable:
--- carta · vinos · galeria · contacto · horario · pescado
+-- carta · vinos · galeria · contacto · horario
 create table if not exists site_content (
   key text primary key,
   value jsonb not null,

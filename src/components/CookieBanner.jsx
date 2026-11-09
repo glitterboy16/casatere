@@ -34,7 +34,7 @@ export default function CookieBanner() {
   if (!visible) return null
 
   return (
-    <div className="cookies" role="dialog" aria-live="polite" aria-label={t('footer.cookies')}>
+    <div className="cookies" role="region" aria-live="polite" aria-label={t('footer.cookies')}>
       <p>
         {t('cookies.texto')}{' '}
         <Link to="/cookies">{t('cookies.mas')}</Link>

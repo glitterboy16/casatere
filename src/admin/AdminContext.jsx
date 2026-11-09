@@ -2,14 +2,14 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { supabase } from '../lib/supabaseClient'
 import { carta as cartaBase, vinosBase } from '../data/carta'
-import { CONTACTO, HORARIO_BASE, PESCADO_BASE } from '../data/casa'
+import { CONTACTO, HORARIO_BASE } from '../data/casa'
 import { galeriaBase } from '../data/galeria'
 
 // ── Modo edición ─────────────────────────────────────────────────────────
 // Todo el contenido editable vive en Supabase (tabla `site_content`, una
 // fila JSON por sección) para que los cambios se vean al momento en
 // cualquier navegador o dispositivo. El login usa Supabase Auth.
-// Secciones: carta · vinos · galeria · contacto · horario · pescado
+// Secciones: carta · vinos · galeria · contacto · horario
 
 const IDIOMAS_DESTINO = ['en', 'de', 'fr', 'it']
 const BUCKET = 'galeria'
@@ -76,11 +76,9 @@ export function AdminProvider({ children }) {
   const [galeria, setGaleria] = useState(galeriaBase)
   const [contacto, setContacto] = useState(CONTACTO)
   const [horario, setHorario] = useState(HORARIO_BASE)
-  const [pescado, setPescado] = useState(PESCADO_BASE)
   // Tras el login se ve la web normal; estos flags activan cada editor
   const [editandoCarta, setEditandoCarta] = useState(false)
   const [editandoGaleria, setEditandoGaleria] = useState(false)
-  const [editandoPescado, setEditandoPescado] = useState(false)
   const [editandoVisita, setEditandoVisita] = useState(false)
 
   // Sesión de admin (persiste sola entre recargas vía Supabase Auth)
@@ -100,15 +98,13 @@ export function AdminProvider({ children }) {
       cargarSeccion('galeria', galeriaBase),
       cargarSeccion('contacto', null),
       cargarSeccion('horario', HORARIO_BASE),
-      cargarSeccion('pescado', PESCADO_BASE),
-    ]).then(([c, v, g, ct, h, p]) => {
+    ]).then(([c, v, g, ct, h]) => {
       if (!vivo) return
       setCartaData(c)
       setVinos(v)
       setGaleria(g)
       if (ct) setContacto((prev) => ({ ...prev, ...ct }))
       setHorario(h)
-      setPescado(p)
     })
     return () => { vivo = false }
   }, [])
@@ -126,7 +122,6 @@ export function AdminProvider({ children }) {
         if (fila.key === 'galeria') setGaleria(fila.value)
         if (fila.key === 'contacto') setContacto((prev) => ({ ...prev, ...fila.value }))
         if (fila.key === 'horario') setHorario(fila.value)
-        if (fila.key === 'pescado') setPescado(fila.value)
       })
       .subscribe()
     return () => supabase.removeChannel(canal)
@@ -148,7 +143,6 @@ export function AdminProvider({ children }) {
     await supabase?.auth.signOut()
     setEditandoCarta(false)
     setEditandoGaleria(false)
-    setEditandoPescado(false)
     setEditandoVisita(false)
     toast('Sesión cerrada. Hasta pronto, Nacho', { id: 'sesion' })
   }
@@ -157,7 +151,6 @@ export function AdminProvider({ children }) {
   const guardar = () => {
     setEditandoCarta(false)
     setEditandoGaleria(false)
-    setEditandoPescado(false)
     setEditandoVisita(false)
     toast.success('Cambios guardados', { id: 'guardar' })
   }
@@ -187,12 +180,6 @@ export function AdminProvider({ children }) {
   const guardarVinos = guardador('vinos', setVinos)
   const guardarGaleria = guardador('galeria', setGaleria)
   const guardarHorario = guardador('horario', setHorario)
-  // Cada cambio en la pizarra la marca con la fecha de hoy
-  const guardarPescado = (nuevo) =>
-    guardador('pescado', setPescado)((prev) => {
-      const val = typeof nuevo === 'function' ? nuevo(prev) : nuevo
-      return { ...val, fecha: new Date().toISOString() }
-    })
 
   const guardarContacto = (telefono) => {
     const tel = String(telefono).trim()
@@ -242,10 +229,10 @@ export function AdminProvider({ children }) {
       value={{
         admin, login, logout, guardar,
         cartaData, guardarCarta, vinos, guardarVinos, galeria, guardarGaleria,
-        horario, guardarHorario, pescado, guardarPescado,
+        horario, guardarHorario,
         contacto, guardarContacto, campoTraducido, subirFoto, borrarFoto,
         editandoCarta, setEditandoCarta, editandoGaleria, setEditandoGaleria,
-        editandoPescado, setEditandoPescado, editandoVisita, setEditandoVisita,
+        editandoVisita, setEditandoVisita,
       }}
     >
       {children}

@@ -14,7 +14,7 @@ const IDIOMAS = [
 ]
 
 // Secciones de la home que marca el scroll-spy (en orden de aparición)
-const SECCIONES = ['pescado', 'casa', 'cocina', 'galeria', 'visita']
+const SECCIONES = ['cocina', 'casa', 'galeria', 'visita']
 
 export default function Nav() {
   const { t, i18n } = useTranslation()
@@ -84,16 +84,16 @@ export default function Nav() {
       <Link
         className="nav-marca"
         to="/"
-        aria-label="Casa Tere, inicio"
+        aria-label={`Casa Tere · ${t('nav.inicio')}`}
         onClick={() => { close(); if (enHome) window.scrollTo({ top: 0, behavior: 'smooth' }) }}
       >
         <img src={logoBlanco} alt="Casa Tere" width="96" height="51" />
       </Link>
 
       <div className="nav-links" id="navLinks">
-        <a href="/#pescado" className={activa('pescado')} onClick={close}>{t('nav.pescado')}</a>
+        <a href="/#cocina" className={activa('cocina')} onClick={close}>{t('nav.cocina')}</a>
         <a href="/#casa" className={activa('casa')} onClick={close}>{t('nav.casa')}</a>
-        <Link to="/carta" className={pathname === '/carta' ? 'active' : activa('cocina')} onClick={close}>
+        <Link to="/carta" className={pathname === '/carta' ? 'active' : ''} onClick={close}>
           {t('nav.carta')}
         </Link>
         {hayGaleria && <a href="/#galeria" className={activa('galeria')} onClick={close}>{t('nav.galeria')}</a>}
@@ -103,20 +103,20 @@ export default function Nav() {
           <button
             className="lang-btn"
             aria-label={t('nav.idioma')}
-            aria-haspopup="listbox"
             aria-expanded={langOpen}
+            aria-controls="menuIdiomas"
             onClick={() => setLangOpen(!langOpen)}
           >
             {lang.toUpperCase()}
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><path d="M7 10l5 5 5-5" /></svg>
           </button>
           {langOpen && (
-            <ul className="lang-menu" role="listbox" aria-label={t('nav.idioma')}>
+            <ul className="lang-menu" id="menuIdiomas" aria-label={t('nav.idioma')}>
               {IDIOMAS.map(([code, nombre]) => (
                 <li key={code}>
                   <button
-                    role="option"
-                    aria-selected={code === lang}
+                    lang={code}
+                    aria-current={code === lang ? 'true' : undefined}
                     className={code === lang ? 'on' : ''}
                     onClick={() => { i18n.changeLanguage(code); setLangOpen(false) }}
                   >

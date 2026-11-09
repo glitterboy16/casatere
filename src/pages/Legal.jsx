@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { LEGAL, TITULAR } from '../data/legal'
 import { useAdmin } from '../admin/AdminContext'
+import { useTitulo } from '../lib/titulo'
 
 function useLegal() {
   const { i18n } = useTranslation()
@@ -29,6 +30,7 @@ function Block({ b }) {
 
 function LegalLayout({ L, titulo, children }) {
   const { t } = useTranslation()
+  useTitulo(titulo)
   useEffect(() => { window.scrollTo(0, 0) }, [])
   return (
     <>

@@ -8,17 +8,19 @@ paseo de Playa Honda (Lanzarote). Pescado fresco y brasa a pie de playa.
 
 ## Qué tiene
 
-- **Pescado del día.** Una pizarra en la portada que Nacho rellena cada mañana:
-  pescado, precio por kilo y estado (hay / últimas piezas / agotado). Lleva la fecha
-  de la última actualización.
-- **Abierto ahora / Cerrado.** El estado se calcula en directo con la hora de Canarias
-  a partir del horario semanal, que también se edita desde la web.
-- **Carta con accesos rápidos.** Barra fija con las categorías, pestaña de Bodega
-  cuando hay vinos, exportación a PDF y generador de QR para las mesas.
+- **Nuestra cocina.** Un carrusel en la portada con un capítulo de la carta por
+  diapositiva: su grabado, platos reales y el enlace a ese capítulo. Sale de los datos
+  de la carta, así que cambia solo cuando Nacho la edita.
+- **Abierto ahora / Cerrado.** Se calcula en directo con la hora de Canarias a partir
+  del horario semanal, que sale de la ficha de Google y Nacho puede editar.
+- **Carta editorial.** Capítulos numerados con índice fijo y un grabado por capítulo, precios
+  de ración y media ración en columnas, alérgenos con nombre bajo cada plato y el sol del
+  logo marcando lo que recomienda la casa. Pestaña de Bodega cuando hay vinos, exportación
+  a PDF y generador de QR para las mesas.
 - **Cinco idiomas.** Español, inglés, alemán, francés e italiano. Lo que Nacho escribe
   en español se traduce solo.
 - **Modo edición sin código.** Se entra pulsando «Nacho González» en el pie de página.
-  Desde ahí se editan carta, vinos, pizarra, galería, horario y teléfono.
+  Desde ahí se editan carta, vinos, galería, horario y teléfono.
 - **Galería.** Nacho sube las fotos desde el móvil; mientras esté vacía no se muestra.
 - **Páginas legales y aviso de cookies.**
 
@@ -40,15 +42,22 @@ VITE_SUPABASE_ANON_KEY=<anon-key>
 ## Puesta en marcha de Supabase
 
 1. Crear un proyecto nuevo en Supabase (no reutilizar el de El Bocadito).
-2. Ejecutar `supabase/schema.sql` en el SQL Editor.
+2. Ejecutar `supabase/schema.sql` (tabla, permisos, tiempo real y bucket `galeria`) y después
+   `supabase/seed.sql` (carta completa, bodega y galería vacías, teléfono). El seed se regenera
+   desde los datos con `node supabase/generar-seed.mjs` y nunca pisa lo ya editado.
 3. En Authentication, crear el usuario de Nacho con el email
    `<usuario>@acceso.casatere.local` y su contraseña. En la web solo escribirá `<usuario>`.
 
+## Despliegue
+
+Vercel, proyecto `casatere` (https://casatere.vercel.app). Se publica con `vercel deploy --prod`;
+`.vercelignore` deja fuera `herramientas/`. Cuando exista la base de Supabase, añadir en Vercel
+`VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` y volver a publicar.
+
 ## Pendiente antes de publicar
 
-- [ ] Carta real con precios (ahora hay una carta de ejemplo sin precios).
-- [ ] Horario real (ahora pone 12:00–23:00 todos los días).
-- [ ] Pescado del día real (los de la pizarra son ejemplos).
+- [x] Carta real con precios y alérgenos (transcrita de la carta física; revisar con Nacho).
+- [x] Horario: lunes cerrado, de martes a domingo de 11:00 a 23:30 (confirmado).
 - [ ] Fotos para la galería.
 - [ ] Datos fiscales del titular en `src/data/legal.js`.
 - [ ] Dominio definitivo (en el aviso legal figura `casatere.es` como provisional).
@@ -75,3 +84,10 @@ src/
   como «RESTAURANTE» en el logo.
 - **Firma visual:** las pinceladas de ola del logo se usan como separador de sección,
   y el hero tiene un mar animado con el mismo trazo.
+- **Grabados:** la carta, el carrusel y el hero llevan grabados de dominio público (Carême,
+  Vilmorin-Andrieux, Mock según Potter, Goode, Pollock, Popular Science Monthly, Rijksmuseum,
+  y una vista de Lanzarote del s. XVIII de la BnF) pasados a
+  tinta de la marca con la herramienta de `herramientas/grabados`. Ninguno se repite. Ahí
+  están el método, los créditos y la configuración para regenerarlos.
+- **El mar del hero:** grabado a buril en tiempo real: tallas que engordan con la luz de la
+  ola y se aquietan detrás de los textos.

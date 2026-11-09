@@ -5,3 +5,8 @@ dist
 .env
 .env.*
 !.env.example
+
+# Caché y descargas de la herramienta de grabados (regenerables)
+herramientas/grabados/cache
+herramientas/grabados/previas
+herramientas/grabados/libros

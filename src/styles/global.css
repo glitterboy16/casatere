@@ -9,8 +9,9 @@
   --abismo: #01133a;      /* pie y fondos más hondos */
   --marea: #0b2c66;       /* superficies sobre marino */
   --sal: #f3f1eb;         /* fondo claro: sal y arena mojada */
-  --espuma: #ffffff;
+  --espuma: #fbfcfd;      /* blanco espuma, un pelo teñido hacia el marino */
   --arena: #e4dccb;       /* líneas y rellenos sobre claro */
+  --sal-honda: color-mix(in oklch, var(--sal) 62%, var(--arena)); /* tarjetas sobre el crema */
   --sol: #e8a35a;         /* el sol del logo: escaso, solo acentos */
   --tinta: #0d1c36;       /* texto sobre claro */
   --niebla: #5a6579;      /* texto secundario sobre claro */
@@ -30,6 +31,15 @@
   --t-xl: clamp(2.3rem, 5.2vw, 3.9rem);
 
   --track: .34em;          /* versalitas como "RESTAURANTE" en el logo */
+
+  /* Bodoni Moda tiene eje de tamaño óptico. Con el automático, a tamaño de
+     titular los perfiles finos casi desaparecen en pantalla (y más sobre
+     marino). Fijamos un corte robusto: texto 14, titulares 30. */
+  --opsz-texto: 14;
+  --opsz-titular: 30;
+
+  /* Anillo de foco: marino sobre claro, sol sobre oscuro (ver .oscuro) */
+  --anillo: var(--marino);
   --wrap: min(1160px, calc(100% - 40px));
   --ease: cubic-bezier(.22, .61, .25, 1);
   --nav-h: 76px;
@@ -42,8 +52,9 @@ body {
   color: var(--tinta);
   font-family: var(--sans);
   font-size: var(--t-body);
-  font-weight: 400;
+  font-weight: 450;
   line-height: 1.7;
+  font-variation-settings: 'opsz' var(--opsz-texto);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
@@ -51,7 +62,7 @@ body {
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
-:focus-visible { outline: 2px solid var(--sol); outline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--anillo); outline-offset: 3px; }
 
 .wrap { width: var(--wrap); margin-inline: auto; }
 .sr-only {
@@ -60,7 +71,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 
 /* ---------- tipografía ---------- */
-h1, h2, h3 { font-family: var(--display); font-weight: 400; line-height: 1.08; text-wrap: balance; letter-spacing: -.01em; }
+h1, h2, h3 { font-family: var(--display); font-weight: 500; line-height: 1.08; text-wrap: balance; letter-spacing: -.01em; font-variation-settings: 'opsz' var(--opsz-titular); }
 h2 { font-size: var(--t-xl); }
 h2 em, h1 em { font-style: italic; }
 p { text-wrap: pretty; }
@@ -68,7 +79,7 @@ p { text-wrap: pretty; }
 /* Eyebrow con filetes a los lados, como "—— RESTAURANTE ——" en el logo */
 .eyebrow {
   display: inline-flex; align-items: center; gap: 14px;
-  font-family: var(--sans); font-size: var(--t-xs); font-weight: 500;
+  font-family: var(--sans); font-size: var(--t-xs); font-weight: 600;
   letter-spacing: var(--track); text-transform: uppercase; line-height: 1.4;
   color: var(--niebla);
 }
@@ -93,8 +104,8 @@ p { text-wrap: pretty; }
 .btn-ghost:hover { background: var(--marino); color: var(--espuma); border-color: var(--marino); }
 .btn:disabled { opacity: .5; cursor: default; }
 /* Sobre fondo marino */
-.oscuro .btn, .btn-claro { background: var(--espuma); color: var(--marino); border-color: var(--espuma); }
-.oscuro .btn:hover, .btn-claro:hover { background: var(--sol); border-color: var(--sol); color: var(--abismo); }
+.oscuro .btn { background: var(--espuma); color: var(--marino); border-color: var(--espuma); }
+.oscuro .btn:hover { background: var(--sol); border-color: var(--sol); color: var(--abismo); }
 .oscuro .btn-ghost { background: transparent; color: var(--espuma); border-color: var(--linea-osc); }
 .oscuro .btn-ghost:hover { background: var(--espuma); color: var(--marino); border-color: var(--espuma); }
 
@@ -110,7 +121,9 @@ p { text-wrap: pretty; }
 
 /* ---------- secciones ---------- */
 section { padding-block: clamp(88px, 11vw, 140px); }
-.oscuro { background: var(--marino); color: var(--espuma); }
+/* Texto claro sobre marino: un punto más de peso y de interlínea para que
+   no se deshaga, y anillo de foco en el color del sol. */
+.oscuro { background: var(--marino); color: var(--espuma); font-weight: 500; line-height: 1.75; --anillo: var(--sol); }
 .sec-head { display: grid; justify-items: center; gap: 18px; text-align: center; margin-bottom: clamp(48px, 6vw, 72px); }
 .sec-head p { max-width: 54ch; color: var(--niebla); }
 .oscuro .sec-head p { color: var(--bruma); }

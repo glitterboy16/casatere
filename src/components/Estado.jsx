@@ -15,6 +15,7 @@ export default function Estado({ className = '' }) {
     return () => clearInterval(id)
   }, [])
 
+  if (!horario) return null
   const e = estadoActual(horario, ahora)
   const dias = t('dias', { returnObjects: true })
   let detalle = ''

@@ -22,7 +22,7 @@ export default function Footer() {
   return (
     <footer className="pie oscuro">
       <div className="wrap pie-grid">
-        <Link to="/" className="pie-logo" aria-label="Casa Tere, inicio">
+        <Link to="/" className="pie-logo" aria-label={`Casa Tere · ${t('nav.inicio')}`}>
           <img src={logoBlanco} alt="Casa Tere · Restaurante · Playa Honda" width="260" height="139" loading="lazy" />
         </Link>
         <Olas />
@@ -46,11 +46,11 @@ export default function Footer() {
             <button className="pie-nombre" onClick={clickNombre}>Nacho González</button>
             {' '}· Lanzarote
           </p>
-          <div role="navigation" aria-label="Enlaces legales">
+          <nav aria-label={t('footer.legal')}>
             <Link to="/aviso-legal">{t('footer.aviso')}</Link>
             <Link to="/privacidad">{t('footer.privacidad')}</Link>
             <Link to="/cookies">{t('footer.cookies')}</Link>
-          </div>
+          </nav>
         </div>
       </div>
       {loginAbierto && <LoginModal onClose={() => setLoginAbierto(false)} />}

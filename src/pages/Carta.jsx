@@ -1,90 +1,155 @@
 import { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import toast from 'react-hot-toast'
 import { useAdmin, resolver } from '../admin/AdminContext'
 import { confirmarAccion } from '../lib/confirmar'
-import { Olas, IconoX, IconoMas, IconoFlecha, IconoPez } from '../components/shared'
+import { useReveal, Olas, Gaviotas, IconoX, IconoMas, IconoSol } from '../components/shared'
+import Mar from '../components/Mar'
+import { Ilustracion } from '../components/Ilustraciones'
+import { useTitulo } from '../lib/titulo'
 import QrModal from '../admin/QrModal'
+import firmaBlanco from '../assets/firma-blanco.png'
 
-const precioEs = (p) => (p && typeof p === 'object' ? p.es ?? '' : p ?? '')
+const textoEs = (v) => (v && typeof v === 'object' ? v.es ?? '' : v ?? '')
+const numero = (i) => String(i + 1).padStart(2, '0')
+// "1, 4, 7" → [1, 4, 7]: solo los 14 alérgenos oficiales, sin repetidos
+const leerAlergenos = (texto) =>
+  [...new Set(String(texto).split(/[^\d]+/).map(Number).filter((n) => n >= 1 && n <= 14))].sort((a, b) => a - b)
 
-function Categoria({ cat, L, editando, acciones }) {
+/* ── Un capítulo: cabecera fija a la izquierda, platos en columnas a la derecha ── */
+function Categoria({ cat, indice, L, editando, acciones }) {
+  const { t } = useTranslation()
+  const ref = useReveal()
+  const tituloId = `t-${cat.id}`
+  const conMedia = cat.platos.some((p) => p.media)
+  const alergenos = t('carta.alergenosLista', { returnObjects: true })
+  const nombresAlergenos = (nums) => nums.map((n) => alergenos[n - 1]).filter(Boolean).join(' · ')
+
   return (
-    <section className="menu-cat" id={cat.id} aria-labelledby={`t-${cat.id}`}>
-      {editando ? (
-        <div className="menu-cat-cab is-admin">
-          <input
-            className="admin-input cat-input"
-            defaultValue={cat.titulo.es}
-            aria-label="Nombre de la categoría"
-            onBlur={(e) => {
-              const v = e.target.value.trim()
-              if (v && v !== cat.titulo.es) acciones.editarTitulo(cat.id, v)
-            }}
-          />
-          <button className="mini-btn" title="Eliminar categoría" aria-label="Eliminar categoría" onClick={() => acciones.eliminarCategoria(cat.id)}>
-            <IconoX />
-          </button>
-        </div>
-      ) : (
-        <div className="menu-cat-cab">
-          <h2 id={`t-${cat.id}`}>{L(cat.titulo)}</h2>
+    <section className="menu-cat reveal" id={cat.id} aria-labelledby={editando ? undefined : tituloId} ref={ref}>
+      <div className="menu-cat-lado">
+        <header className="menu-cat-cab">
+          <Ilustracion cat={cat} />
+          <span className="menu-cat-num" aria-hidden="true">{numero(indice)}</span>
+          {editando ? (
+            <div className="menu-cat-edit">
+              <input
+                className="admin-input cat-input"
+                defaultValue={cat.titulo.es}
+                aria-label="Nombre de la categoría"
+                onBlur={(e) => {
+                  const v = e.target.value.trim()
+                  if (v && v !== cat.titulo.es) acciones.editarTitulo(cat.id, v)
+                }}
+              />
+              <button className="mini-btn" title="Eliminar categoría" aria-label="Eliminar categoría" onClick={() => acciones.eliminarCategoria(cat.id)}>
+                <IconoX />
+              </button>
+            </div>
+          ) : (
+            <h2 id={tituloId}>{L(cat.titulo)}</h2>
+          )}
           <Olas />
-        </div>
-      )}
-      {editando ? (
-        <input
-          className="admin-input nota-input"
-          defaultValue={cat.nota?.es ?? ''}
-          placeholder="Nota de la categoría (opcional)"
-          aria-label="Nota de la categoría"
-          onBlur={(e) => {
-            const v = e.target.value.trim()
-            if (v !== (cat.nota?.es ?? '')) acciones.editarNota(cat.id, v)
-          }}
-        />
-      ) : (
-        cat.nota && <p className="menu-cat-nota">{L(cat.nota)}</p>
-      )}
+          {editando ? (
+            <input
+              className="admin-input nota-input"
+              defaultValue={cat.nota?.es ?? ''}
+              placeholder="Nota de la categoría (opcional)"
+              aria-label="Nota de la categoría"
+              onBlur={(e) => {
+                const v = e.target.value.trim()
+                if (v !== (cat.nota?.es ?? '')) acciones.editarNota(cat.id, v)
+              }}
+            />
+          ) : (
+            cat.nota && <p className="menu-cat-nota">{L(cat.nota)}</p>
+          )}
+        </header>
+      </div>
 
       <ul className="platos">
+        {conMedia && !editando && (
+          <li className="platos-cab" aria-hidden="true">
+            <span />
+            <span>{t('carta.racion')}</span>
+            <span>{t('carta.media')}</span>
+          </li>
+        )}
         {cat.platos.map((p, i) => {
           const id = p.id ?? i
           if (!editando) {
             return (
-              <li key={id} className="plato">
-                <div className="plato-linea">
-                  <span className="plato-nombre">{L(p.nombre)}</span>
-                  {p.precio && <span className="plato-guia" aria-hidden="true" />}
-                  {p.precio && <span className="plato-precio">{L(p.precio)}</span>}
-                </div>
+              <li key={id} className={`plato${p.precio ? '' : ' sin-precio'}`} style={{ '--i': Math.min(i, 8) }}>
+                <span className="plato-nombre">
+                  <span className="plato-txt">
+                    {p.sol && <IconoSol className="plato-sol" />}
+                    {p.sol && <span className="sr-only">{t('carta.casa')}: </span>}
+                    {L(p.nombre)}
+                  </span>
+                </span>
+                {p.precio && (
+                  <span className="plato-precio">
+                    {conMedia && <span className="sr-only">{t('carta.racion')} </span>}
+                    {L(p.precio)}
+                  </span>
+                )}
+                {p.media && (
+                  <span className="plato-media">
+                    <span className="sr-only">{t('carta.media')} </span>
+                    {L(p.media)}
+                  </span>
+                )}
                 {p.desc && <p className="plato-desc">{L(p.desc)}</p>}
+                {p.alergenos?.length > 0 && (
+                  <p className="plato-alerg" title={`${t('carta.alergenos')}: ${p.alergenos.join(', ')}`}>
+                    <span className="sr-only">{t('carta.alergenos')}: </span>
+                    {nombresAlergenos(p.alergenos)}
+                  </p>
+                )}
               </li>
             )
           }
           return (
             <li key={id} className="plato plato-admin">
-              <div className="plato-linea">
+              <div className="plato-fila">
+                <button
+                  className={`mini-btn sol-btn${p.sol ? ' on' : ''}`}
+                  title={t('carta.casa')}
+                  aria-label={t('carta.casa')}
+                  aria-pressed={!!p.sol}
+                  onClick={() => acciones.alternarSol(cat.id, id)}
+                >
+                  <IconoSol />
+                </button>
                 <input
-                  className="admin-input"
-                  defaultValue={typeof p.nombre === 'object' ? p.nombre?.es ?? '' : p.nombre ?? ''}
+                  className="admin-input nombre-input"
+                  defaultValue={textoEs(p.nombre)}
                   placeholder="Nombre"
                   aria-label="Nombre"
                   onBlur={(e) => {
                     const v = e.target.value.trim()
-                    const actual = typeof p.nombre === 'object' ? p.nombre?.es : p.nombre
-                    if (v && v !== actual) acciones.editarNombre(cat.id, id, v)
+                    if (v && v !== textoEs(p.nombre)) acciones.editarNombre(cat.id, id, v)
                   }}
                 />
                 <input
                   className="admin-input precio-input"
-                  defaultValue={precioEs(p.precio)}
-                  placeholder="0,00 €"
-                  aria-label="Precio"
+                  defaultValue={textoEs(p.precio)}
+                  placeholder="Ración"
+                  aria-label="Precio de la ración"
                   onBlur={(e) => {
                     const v = e.target.value.trim()
-                    if (v !== precioEs(p.precio)) acciones.editarPrecio(cat.id, id, v)
+                    if (v !== textoEs(p.precio)) acciones.editarPrecio(cat.id, id, v)
+                  }}
+                />
+                <input
+                  className="admin-input precio-input"
+                  defaultValue={textoEs(p.media)}
+                  placeholder="Media"
+                  aria-label="Precio de la media ración"
+                  onBlur={(e) => {
+                    const v = e.target.value.trim()
+                    if (v !== textoEs(p.media)) acciones.editarMedia(cat.id, id, v)
                   }}
                 />
                 <button className="mini-btn" title="Eliminar" aria-label="Eliminar" onClick={() => acciones.eliminarPlato(cat.id, id)}>
@@ -102,12 +167,22 @@ function Categoria({ cat, L, editando, acciones }) {
                   if (v !== (p.desc?.es ?? '')) acciones.editarDesc(cat.id, id, v)
                 }}
               />
+              <input
+                className="admin-input alerg-input"
+                defaultValue={(p.alergenos ?? []).join(', ')}
+                placeholder="Alérgenos por número: 1, 4, 7"
+                aria-label="Alérgenos"
+                onBlur={(e) => {
+                  const v = leerAlergenos(e.target.value)
+                  if (v.join() !== (p.alergenos ?? []).join()) acciones.editarAlergenos(cat.id, id, v)
+                }}
+              />
             </li>
           )
         })}
       </ul>
       {editando && (
-        <button className="btn btn-ghost" onClick={() => acciones.añadirPlato(cat.id)}><IconoMas />Añadir</button>
+        <button className="btn btn-ghost add-plato" onClick={() => acciones.añadirPlato(cat.id)}><IconoMas />Añadir plato</button>
       )}
     </section>
   )
@@ -131,15 +206,18 @@ export default function Carta() {
   const mostrarTabs = admin || vinos.length > 0
   const lang = i18n.language.slice(0, 2)
   const L = resolver(lang)
+  const haySol = datos.some((c) => c.platos.some((p) => p.sol))
+  useTitulo(t('carta.titulo'))
+  const alergenosEs = t('carta.alergenosLista', { returnObjects: true, lng: 'es' })
 
-  // Entrada directa a una categoría (/carta#mar) o arriba del todo
+  // Entrada directa a una categoría (/carta#pescados) o arriba del todo
   useEffect(() => {
     if (!hash) { window.scrollTo(0, 0); return }
     const el = document.querySelector(hash)
     if (el) setTimeout(() => el.scrollIntoView(), 60)
   }, [hash])
 
-  // Scroll-spy de las categorías para la barra de accesos rápidos
+  // Scroll-spy de las categorías para el índice de la barra fija
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY + window.innerHeight * 0.3
@@ -155,7 +233,7 @@ export default function Carta() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [datos])
 
-  // Mantiene visible el chip activo dentro de su barra horizontal
+  // Mantiene visible el capítulo activo dentro del índice horizontal
   useEffect(() => {
     document.querySelector('.chips .on')?.scrollIntoView({ block: 'nearest', inline: 'center' })
   }, [activa])
@@ -188,6 +266,13 @@ export default function Carta() {
       prev.map((c) => (c.id !== catId ? c : { ...c, platos: c.platos.map((p, i) => ((p.id ?? i) !== platoId ? p : fn(p))) }))
     )
 
+  // Un precio con cifras se guarda tal cual; si es texto ("Según mercado") se traduce
+  const precioOTexto = (texto, aplicar) => {
+    if (!texto) return aplicar(undefined)
+    if (/\d/.test(texto)) return aplicar(texto)
+    campoTraducido(texto, aplicar)
+  }
+
   const acciones = {
     editarTitulo: (catId, texto) =>
       campoTraducido(texto, (obj) => guardarDatos((prev) => prev.map((c) => (c.id === catId ? { ...c, titulo: obj } : c)))),
@@ -203,7 +288,13 @@ export default function Carta() {
       if (!texto) return setPlato(catId, platoId, (p) => ({ ...p, desc: undefined }))
       campoTraducido(texto, (obj) => setPlato(catId, platoId, (p) => ({ ...p, desc: obj })))
     },
-    editarPrecio: (catId, platoId, texto) => setPlato(catId, platoId, (p) => ({ ...p, precio: texto || undefined })),
+    editarPrecio: (catId, platoId, texto) =>
+      precioOTexto(texto, (v) => setPlato(catId, platoId, (p) => ({ ...p, precio: v }))),
+    editarMedia: (catId, platoId, texto) =>
+      precioOTexto(texto, (v) => setPlato(catId, platoId, (p) => ({ ...p, media: v }))),
+    editarAlergenos: (catId, platoId, lista) =>
+      setPlato(catId, platoId, (p) => ({ ...p, alergenos: lista.length ? lista : undefined })),
+    alternarSol: (catId, platoId) => setPlato(catId, platoId, (p) => ({ ...p, sol: p.sol ? undefined : true })),
     añadirPlato: (catId) => {
       guardarDatos((prev) =>
         prev.map((c) =>
@@ -240,29 +331,39 @@ export default function Carta() {
 
   return (
     <>
-      <header className="page-head oscuro">
+      <header className="page-head carta-head">
+        <div className="carta-head-sol" aria-hidden="true" />
+        <Mar color="2, 30, 80" calma=".carta-lema" />
+        <Gaviotas className="carta-gaviotas" />
         <div className="wrap">
           <span className="eyebrow">{t('carta.eyebrow')}</span>
           <h1>{t('carta.titulo')}</h1>
           <Olas />
+          <p className="carta-lema">{t('carta.lema')}</p>
         </div>
       </header>
 
       <div className="carta-barra">
         <div className="wrap carta-barra-in">
           {mostrarTabs && (
-            <div className="tabs" role="tablist" aria-label="Tipo de carta">
-              <button role="tab" aria-selected={!esVinos} className={!esVinos ? 'on' : ''} onClick={() => setTipo('comida')}>
+            <div className="tabs" role="group" aria-label={t('carta.tipo')}>
+              <button aria-pressed={!esVinos} className={!esVinos ? 'on' : ''} onClick={() => setTipo('comida')}>
                 {t('carta.comida')}
               </button>
-              <button role="tab" aria-selected={esVinos} className={esVinos ? 'on' : ''} onClick={() => setTipo('vinos')}>
+              <button aria-pressed={esVinos} className={esVinos ? 'on' : ''} onClick={() => setTipo('vinos')}>
                 {t('carta.vinos')}
               </button>
             </div>
           )}
-          <nav className="chips" aria-label={t('carta.titulo')}>
-            {datos.map((c) => (
-              <button key={c.id} className={activa === c.id ? 'on' : ''} onClick={() => irA(c.id)}>
+          <nav className="chips" aria-label={t('carta.indice')}>
+            {datos.map((c, i) => (
+              <button
+                key={c.id}
+                className={activa === c.id ? 'on' : ''}
+                aria-current={activa === c.id ? 'true' : undefined}
+                onClick={() => irA(c.id)}
+              >
+                <small aria-hidden="true">{numero(i)}</small>
                 {L(c.titulo)}
               </button>
             ))}
@@ -270,16 +371,8 @@ export default function Carta() {
         </div>
       </div>
 
-      <div className="carta">
+      <div className={`carta oscuro${editando ? ' editando' : ''}`}>
         <div className="carta-in">
-          {!esVinos && (
-            <Link to="/#pescado" className="carta-pescado">
-              <IconoPez />
-              <span>{t('carta.pescadoCta')}</span>
-              <IconoFlecha />
-            </Link>
-          )}
-
           {admin && (
             <div className="edit-bar">
               {editando
@@ -292,12 +385,15 @@ export default function Carta() {
             </div>
           )}
           {editando && (
-            <p className="admin-aviso">Escribe en español: las traducciones se generan solas al salir de cada campo.</p>
+            <div className="admin-aviso">
+              <p>Escribe en español: las traducciones se generan solas al salir de cada campo. El sol marca lo que recomienda la casa.</p>
+              <p className="admin-leyenda">{alergenosEs.map((n, i) => `${i + 1} ${n}`).join(' · ')}</p>
+            </div>
           )}
 
-          <div key={tipo}>
-            {datos.map((cat) => (
-              <Categoria key={cat.id} cat={cat} L={L} editando={editando} acciones={acciones} />
+          <div className="menu" key={tipo}>
+            {datos.map((cat, i) => (
+              <Categoria key={cat.id} cat={cat} indice={i} L={L} editando={editando} acciones={acciones} />
             ))}
           </div>
           {esVinos && datos.length === 0 && !editando && (
@@ -307,11 +403,20 @@ export default function Carta() {
             <button className="btn btn-ghost add-cat" onClick={añadirCategoria}><IconoMas />Añadir categoría</button>
           )}
 
-          <p className="carta-nota">
-            {t('carta.nota1')}
-            <a href={contacto.telHref}>{t('carta.notaLink')}</a>
-            {t('carta.nota2')}
-          </p>
+          <footer className="carta-cierre">
+            {haySol && (
+              <p className="carta-leyenda"><IconoSol />{t('carta.casa')}</p>
+            )}
+            <p className="carta-nota">
+              {t('carta.nota1')}
+              <a href={contacto.telHref}>{t('carta.notaLink')}</a>
+              {t('carta.nota2')}
+            </p>
+            <div className="carta-firma">
+              <img src={firmaBlanco} alt="Nacho González" width="220" height="35" loading="lazy" />
+              <span>{t('carta.despedida')}</span>
+            </div>
+          </footer>
         </div>
       </div>
       {qrAbierto && <QrModal url={`${window.location.origin}/carta`} onClose={() => setQrAbierto(false)} />}
