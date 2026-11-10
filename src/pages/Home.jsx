@@ -18,7 +18,7 @@ import vistaLanzarote from '../assets/casa/casa-vista.webp'
 import vistaLanzaroteMovil from '../assets/casa/casa-vista-1200.webp'
 
 /* ─────────────────────────── HERO ─────────────────────────── */
-// Siete pulpos grabados (herramientas/grabados, todos con la cabeza arriba).
+// Seis pulpos grabados (herramientas/grabados, todos con la cabeza arriba).
 // Cada carga de la web enseña uno, sin repetir el de la visita anterior.
 // Con /?pulpo=09 se fuerza uno concreto para revisarlo.
 // Cada pulpo en dos tamaños: el grande (escritorio retina) y uno de 1000 px para móvil.

@@ -12,7 +12,6 @@
 | portada-carnes | Stier (RP-P-1885-A-8627), según «De Stier» de Paulus Potter (1647) | Johannes Mock | 1824 | CC0 (Rijksmuseum) | https://commons.wikimedia.org/wiki/File:Stier,_RP-P-1885-A-8627.jpg |
 | moldura-olas | Ornements pour moulures et cadres, 45e cahier, nº 269 (RP-P-1964-3986) | J.-F. Boucher fils (dib.), Pelletier (grab.) | 1772–1779 | CC0 | https://commons.wikimedia.org/wiki/File:Drie_lijsten_Ornements_pour_moutures_et_cadres_(titel_op_object)_Lijsten_(serietitel)_45e_Cahier_(serietitel_op_object),_RP-P-1964-3986.jpg |
 | casa-vista | Vues de Lancerote (vista de costa, Service hydrographique de la Marine, GE SH 18 PF 111 DIV 1 P 5 D) | Anónimo | s. XVIII | Dominio público (BnF) | https://commons.wikimedia.org/wiki/File:Vues_de_Lancerote_-_btv1b53153360p.jpg |
-| pulpo-01 | Octopus vulgaris | Ernst Haeckel | 1904 | Dominio público | https://commons.wikimedia.org/wiki/File:Octopusvulgaris.jpg |
 | pulpo-02 | Octopus vulgaris (vista ventral) | Ernst Haeckel | 1904 | Dominio público | https://commons.wikimedia.org/wiki/File:Octopusvulgaris1.jpg |
 | pulpo-03 | Benthoctopus levis, Report on the Cephalopoda collected by H.M.S. Challenger | A. Pollock (lit.), W. E. Hoyle | 1886 | Dominio público | https://commons.wikimedia.org/wiki/File:Benthoctopus_levis1.jpg |
 | pulpo-09 | Octopus bimaculatus | United States Fish Commission | 1910 | Dominio público | https://commons.wikimedia.org/wiki/File:Octopus_bimaculatus.jpg |

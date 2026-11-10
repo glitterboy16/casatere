@@ -329,28 +329,6 @@
       }
     },
     {
-      "nombre": "pulpo-01",
-      "salida": "../../src/assets/hero",
-      "max": 1800,
-      "peso": 0.82,
-      "limpieza": 0.1,
-      "calidad": 68,
-      "aplanar": true,
-      "fuente": "https://upload.wikimedia.org/wikipedia/commons/6/62/Octopusvulgaris.jpg",
-      "girar": 0,
-      "credito": {
-        "obra": "Octopus vulgaris",
-        "autor": "Ernst Haeckel",
-        "fecha": "1904",
-        "licencia": "Dominio público",
-        "pagina": "https://commons.wikimedia.org/wiki/File:Octopusvulgaris.jpg"
-      },
-      "ampliar": true,
-      "variantes": [
-        1000
-      ]
-    },
-    {
       "nombre": "pulpo-02",
       "salida": "../../src/assets/hero",
       "max": 1800,
