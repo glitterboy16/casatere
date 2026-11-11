@@ -35,6 +35,17 @@ const TIPOS = [
 const CARTA = { ensaladas, entrantes, pescados, carnes, postres }
 const PORTADA = { pescados: portadaPescados, carnes: portadaCarnes, entrantes: portadaEntrantes }
 
+// Medidas reales de cada grabado. Sin ellas el navegador no reserva el hueco y
+// el capítulo crece al cargar la imagen, empujando los platos que se están
+// leyendo (y descuadrando el salto a /carta#pescados).
+const MEDIDAS = {
+  ensaladas: [1000, 682],
+  entrantes: [912, 1000],
+  pescados: [908, 800],
+  carnes: [783, 1000],
+  postres: [940, 1000],
+}
+
 export function tipoDe(cat) {
   const clave = `${cat.id ?? ''} ${typeof cat.titulo === 'object' ? cat.titulo?.es ?? '' : cat.titulo ?? ''}`
   return TIPOS.find(([, re]) => re.test(clave))?.[0] ?? null
@@ -44,7 +55,19 @@ export const ilustracionPortada = (tipo) => PORTADA[tipo] ?? null
 
 // Decorativa: alt vacío para que los lectores de pantalla la salten
 export function Ilustracion({ cat }) {
-  const src = CARTA[tipoDe(cat)]
+  const tipo = tipoDe(cat)
+  const src = CARTA[tipo]
   if (!src) return null
-  return <img className="menu-cat-ilus" src={src} alt="" loading="lazy" decoding="async" />
+  const [ancho, alto] = MEDIDAS[tipo]
+  return (
+    <img
+      className="menu-cat-ilus"
+      src={src}
+      alt=""
+      width={ancho}
+      height={alto}
+      loading="lazy"
+      decoding="async"
+    />
+  )
 }

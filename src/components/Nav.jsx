@@ -27,6 +27,8 @@ export default function Nav() {
   const [seccion, setSeccion] = useState('inicio')
   const [langOpen, setLangOpen] = useState(false)
   const langRef = useRef(null)
+  const langBtnRef = useRef(null)
+  const burgerRef = useRef(null)
   const { pathname } = useLocation()
   const enHome = pathname === '/'
   const lang = i18n.language.slice(0, 2)
@@ -58,15 +60,24 @@ export default function Nav() {
 
   useEffect(() => setOpen(false), [pathname])
 
-  // Menú móvil abierto: bloquea el scroll de fondo y cierra con Escape
+  // Menú móvil abierto: bloquea el scroll de fondo y cierra con Escape.
+  // El panel va antes del botón hamburguesa en el DOM, así que sin esto el
+  // tabulador se escapa al contenido de detrás, que el panel tapa por completo:
+  // se deja inerte el resto de la página y al cerrar se devuelve el foco.
   useEffect(() => {
     if (!open) return
+    const fondo = [document.querySelector('main'), document.querySelector('footer')]
     document.body.style.overflow = 'hidden'
+    fondo.forEach((el) => { if (el) el.inert = true })
     const onKey = (e) => e.key === 'Escape' && setOpen(false)
     window.addEventListener('keydown', onKey)
     return () => {
       document.body.style.overflow = ''
+      fondo.forEach((el) => { if (el) el.inert = false })
       window.removeEventListener('keydown', onKey)
+      // Solo si el foco se ha quedado huérfano: al ocultarse el panel el
+      // navegador lo manda al body. Así no se le roba el foco a nadie.
+      if (document.activeElement === document.body) burgerRef.current?.focus()
     }
   }, [open])
 
@@ -81,31 +92,51 @@ export default function Nav() {
 
   const close = () => setOpen(false)
   const activa = (id) => (enHome && seccion === id ? 'active' : '')
+  // Para lectores de pantalla: la sección en la que estás es "location", la
+  // página en la que estás es "page".
+  const aqui = (id) => (enHome && seccion === id ? 'location' : undefined)
+  const nombreIdioma = IDIOMAS.find(([code]) => code === lang)?.[1] ?? lang
 
   return (
-    <nav className={`nav${solid ? ' solid' : ''}${open ? ' abierto' : ''}`}>
+    <nav className={`nav${solid ? ' solid' : ''}${open ? ' abierto' : ''}`} aria-label={t('nav.principal')}>
       <Link
         className="nav-marca"
         to="/"
         aria-label={`Casa Tere · ${t('nav.inicio')}`}
-        onClick={() => { close(); if (enHome) window.scrollTo({ top: 0, behavior: 'smooth' }) }}
+        onClick={() => {
+          close()
+          if (!enHome) return
+          const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+          window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' })
+        }}
       >
         <img src={logoBlanco} alt="Casa Tere" width="96" height="51" />
       </Link>
 
       <div className="nav-links" id="navLinks">
-        <a href={`${BASE}#cocina`} className={activa('cocina')} onClick={close}>{t('nav.cocina')}</a>
-        <a href={`${BASE}#casa`} className={activa('casa')} onClick={close}>{t('nav.casa')}</a>
-        <Link to="/carta" className={pathname === '/carta' ? 'active' : ''} onClick={close}>
+        <a href={`${BASE}#cocina`} className={activa('cocina')} aria-current={aqui('cocina')} onClick={close}>{t('nav.cocina')}</a>
+        <a href={`${BASE}#casa`} className={activa('casa')} aria-current={aqui('casa')} onClick={close}>{t('nav.casa')}</a>
+        <Link
+          to="/carta"
+          className={pathname === '/carta' ? 'active' : ''}
+          aria-current={pathname === '/carta' ? 'page' : undefined}
+          onClick={close}
+        >
           {t('nav.carta')}
         </Link>
-        {hayGaleria && <a href={`${BASE}#galeria`} className={activa('galeria')} onClick={close}>{t('nav.galeria')}</a>}
-        <a href={`${BASE}#visita`} className={activa('visita')} onClick={close}>{t('nav.visita')}</a>
+        {hayGaleria && <a href={`${BASE}#galeria`} className={activa('galeria')} aria-current={aqui('galeria')} onClick={close}>{t('nav.galeria')}</a>}
+        <a href={`${BASE}#visita`} className={activa('visita')} aria-current={aqui('visita')} onClick={close}>{t('nav.visita')}</a>
 
-        <div className="lang" ref={langRef}>
+        <div
+          className="lang"
+          ref={langRef}
+          onKeyDown={(e) => { if (e.key === 'Escape' && langOpen) { setLangOpen(false); langBtnRef.current?.focus() } }}
+          onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setLangOpen(false) }}
+        >
           <button
+            ref={langBtnRef}
             className="lang-btn"
-            aria-label={t('nav.idioma')}
+            aria-label={`${t('nav.idioma')}: ${nombreIdioma}`}
             aria-expanded={langOpen}
             aria-controls="menuIdiomas"
             onClick={() => setLangOpen(!langOpen)}
@@ -121,7 +152,7 @@ export default function Nav() {
                     lang={code}
                     aria-current={code === lang ? 'true' : undefined}
                     className={code === lang ? 'on' : ''}
-                    onClick={() => { i18n.changeLanguage(code); setLangOpen(false) }}
+                    onClick={() => { i18n.changeLanguage(code); setLangOpen(false); langBtnRef.current?.focus() }}
                   >
                     {nombre}
                   </button>
@@ -140,6 +171,7 @@ export default function Nav() {
       </div>
 
       <button
+        ref={burgerRef}
         className="burger"
         aria-label={open ? t('nav.cerrar') : t('nav.abrir')}
         aria-expanded={open}

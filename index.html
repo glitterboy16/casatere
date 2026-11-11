@@ -6,14 +6,50 @@
     <title>Casa Tere · Restaurante en Playa Honda · Lanzarote</title>
     <meta name="description" content="Casa Tere, restaurante de Nacho González en el paseo de Playa Honda, Lanzarote. Pescado fresco del día y brasa a pie de playa." />
     <meta name="theme-color" content="#021E50" />
+    <!-- Al compartir por WhatsApp, que es como circula un restaurante, las URL
+         relativas no valen: tienen que ser absolutas. Cambiar el dominio aquí
+         y en el JSON-LD cuando se asigne el definitivo. -->
+    <meta property="og:type" content="restaurant.restaurant" />
+    <meta property="og:site_name" content="Casa Tere" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:url" content="https://casatere.vercel.app/" />
     <meta property="og:title" content="Casa Tere · Playa Honda" />
     <meta property="og:description" content="Pescado fresco y brasa a pie de playa, en Lanzarote." />
-    <meta property="og:image" content="/favicon.png" />
+    <meta property="og:image" content="https://casatere.vercel.app/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Casa Tere · Restaurante · Playa Honda" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://casatere.vercel.app/" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Montserrat:wght@400..700&display=swap" rel="stylesheet" />
+    <!-- Ficha para buscadores. Sin openingHours a propósito: el horario lo edita
+         Nacho desde la web y aquí se quedaría viejo, que es peor que no ponerlo. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Restaurant",
+        "name": "Casa Tere",
+        "description": "Restaurante de pescado fresco del día y brasa en el paseo de Playa Honda, Lanzarote.",
+        "url": "https://casatere.vercel.app/",
+        "image": "https://casatere.vercel.app/og.jpg",
+        "hasMenu": "https://casatere.vercel.app/carta",
+        "servesCuisine": ["Canaria", "Pescado y marisco", "Mediterránea"],
+        "telephone": "+34 928 82 17 06",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Paseo de Playa Honda",
+          "addressLocality": "Playa Honda",
+          "addressRegion": "Las Palmas",
+          "postalCode": "35509",
+          "addressCountry": "ES"
+        },
+        "sameAs": ["https://www.instagram.com/casaterelz/"]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -7,6 +7,16 @@ Las referencias `archivo:línea` son del estado del repo en el commit que añade
 Lo marcado **(verificado)** se comprobó leyendo el código; el resto viene del informe y
 conviene confirmarlo al abordarlo.
 
+> **Estado.** Lo marcado `[x]` ya está arreglado y compila, pero **no se ha visto en un móvil
+> real**: la pasada se hizo leyendo y midiendo el CSS, no renderizando. Lo primero que hay que
+> hacer es abrir `/carta` en un teléfono y confirmar que se ve un plato sin hacer scroll.
+>
+> Dos cosas se dejaron a propósito sin tocar porque no son decisión técnica:
+> el **banner de cookies** (quitarlo es lo correcto si no hay analítica, pero es una decisión
+> de Nacho) y los **datos fiscales**, que hay que pedirle. Del banner solo se arregló que no se
+> salga de la pantalla; sigue tapando los botones del hero y sigue pidiendo permiso para
+> cookies que no existen.
+
 ---
 
 ## Bloqueado · hace falta un dato de Nacho
@@ -32,7 +42,7 @@ conviene confirmarlo al abordarlo.
       0,9 s con ~250 px y tapa «Ver la carta» y «Reservar mesa». Mantener la página
       `/cookies` informativa. Si algún día entra analítica, volver a ponerlo con un botón y
       los dos al mismo nivel visual.
-- [ ] **La primera pantalla de `/carta` no enseña ni un plato.** Es la pantalla del QR. Entre
+- [x] **La primera pantalla de `/carta` no enseña ni un plato.** Es la pantalla del QR. Entre
       cabecera (~450 px), barra de capítulos (74 px), padding y la ilustración de capítulo a
       257 px, el primer nombre cae a ~900 px. En `@media (max-width: 640px)`: bajar el padding
       de `.carta-head`, h1 a ~2.2rem, ocultar `.carta-lema` y el `<Mar>`, y la ilustración de
@@ -40,7 +50,7 @@ conviene confirmarlo al abordarlo.
 
 ## P1 · importan de verdad
 
-- [ ] **Bomba de relojería en el reveal.** `src/components/shared.jsx:26` usa `threshold: 0.12`,
+- [x] **Bomba de relojería en el reveal.** `src/components/shared.jsx:26` usa `threshold: 0.12`,
       que se calcula sobre la altura de la sección. Cuando un capítulo pase de ~8 pantallas, no
       alcanzará nunca el 12 % visible, el observer no dispara y el `opacity: 0` se queda fijo:
       **el capítulo desaparece para siempre**. Nacho lo provocará solo añadiendo platos.
@@ -49,20 +59,20 @@ conviene confirmarlo al abordarlo.
       toque» y es la página del QR. `.nav-cta` vive dentro del panel del burger; `<Estado>` solo
       se monta en la portada. Añadir un botón redondo de 44 px con `tel:` en `.nav`, fuera de
       `.nav-links` (sin `onClick={close}`, por el bug de iOS), y `<Estado>` compacto bajo el h1.
-- [ ] **Un holandés, sueco o polaco recibe la web en español.** `src/i18n/index.js:14`:
+- [x] **Un holandés, sueco o polaco recibe la web en español.** `src/i18n/index.js:14`:
       `IDIOMAS.includes(nav) ? nav : 'es'`. En Lanzarote es mucha gente. Pasar el fallback a
       `'en'`. Una línea. **(verificado)**
-- [ ] **El sol se desbordó contra su propia regla.** `src/styles/components.css:342` declara por
+- [x] **El sol se desbordó contra su propia regla.** `src/styles/components.css:342` declara por
       escrito que el sol señala «solo dos cosas: el número de capítulo y lo que recomienda la
       casa». Luego lo usa en los puntos de cada plato (`:213`), el contador de los chips (`:382`)
       y los iconos del pie (`:530`), y el glow de la cabecera de la carta está al 24 % (`:354`),
       más intenso que el del hero. **(verificado)**
-- [ ] **Anillo de foco invisible en el login público.** El modal se monta dentro de
+- [x] **Anillo de foco invisible en el login público.** El modal se monta dentro de
       `<footer className="pie oscuro">` (`Footer.jsx:56`), hereda `--anillo: var(--sol)` y queda
       en **2,08:1** sobre espuma. Lo abre cualquiera que pulse «Nacho González». Arreglo:
       `.velo, .panel { --anillo: var(--marino); }` y `.admin-input:focus { outline-color: var(--anillo); }`.
       **(verificado)**
-- [ ] **Menú móvil: foco perdido y sin scroll.** `.burger` va después de `.nav-links` en el DOM
+- [x] **Menú móvil: foco perdido y sin scroll.** `.burger` va después de `.nav-links` en el DOM
       (`Nav.jsx:96` vs `:144`), así que al tabular con el menú abierto el foco cae detrás del
       panel opaco. Y `.nav-links` no tiene `overflow-y`: a 320 px de ancho «Reservar» y el
       selector de idioma quedan fuera de alcance. Al cerrar no se devuelve el foco al burger.
@@ -80,10 +90,10 @@ conviene confirmarlo al abordarlo.
       Ojo: los cuatro `.ttf` de `src/assets/fonts/` **no sirven** — son instancias estáticas que
       usa solo `src/admin/exportarPdf.js:2-5` para el PDF, y perderían el eje óptico de Bodoni.
       **(verificado)**
-- [ ] **El dato más útil tarda 2,4 s en aparecer.** `components.css:96-102`: `.hero-pie`
+- [x] **El dato más útil tarda 2,4 s en aparecer.** `components.css:96-102`: `.hero-pie`
       (abierto/cerrado) entra con `emerge 1.6s` y `.8s` de retraso. Bajar `emerge` a ~.7s y los
       retrasos a .1/.2/.3s, o eximir `.hero-pie`. **(verificado)**
-- [ ] **Ilustraciones de capítulo sin dimensiones.** `src/components/Ilustraciones.jsx:49` no
+- [x] **Ilustraciones de capítulo sin dimensiones.** `src/components/Ilustraciones.jsx:49` no
       pasa `width`/`height` ni `aspect-ratio`: cada carga empuja los platos que se están leyendo
       y rompe el salto a `/carta#pescados`. Pesan 157-400 KB para una línea a un color.
       **(verificado)**
@@ -92,7 +102,7 @@ conviene confirmarlo al abordarlo.
       bien cubierto, pero WCAG pide un mecanismo explícito en la página. Un botón «Pausar
       movimiento» con `aria-pressed` que ponga `html.quieto` y
       `.quieto *, .quieto *::before, .quieto *::after { animation-play-state: paused !important }`.
-- [ ] **Desnudar el hero.** Acumula `filter: drop-shadow` en el logo (`:90`), `respira 9s` en el
+- [x] **Desnudar el hero.** Acumula `filter: drop-shadow` en el logo (`:90`), `respira 9s` en el
       sol (`:82-84`), `flota 12s` en el pulpo (`:134-136`) y dos gradientes con hex sueltos fuera
       del sistema de tokens (`:74-75`). Que el mar sea el único movimiento. **(verificado)**
 - [ ] **La traducción automática no tiene glosario.** `src/admin/AdminContext.jsx:212-225` manda
@@ -104,7 +114,7 @@ conviene confirmarlo al abordarlo.
 
 ## P2 · incumplimientos y fallos serios
 
-- [ ] **Estado activo sin contraste** (1.4.11). `.chips button.on`: borde 1,74:1 y fondo 1,26:1;
+- [x] **Estado activo sin contraste** (1.4.11). `.chips button.on`: borde 1,74:1 y fondo 1,26:1;
       texto activo vs inactivo 1,78:1. `.cocina-indice button.on::after`: 1,32:1. Al sol no se
       sabe en qué capítulo estás (el lector de pantalla sí, hay `aria-current`). Arreglo:
       `.chips button.on { background: var(--espuma); color: var(--marino) }` y el subrayado del
@@ -117,21 +127,21 @@ conviene confirmarlo al abordarlo.
       `scroll-padding-top` global son 88 px, pero `.carta-barra` añade 64 px (hasta 124 px en
       ≤640 px con las pestañas de Bodega). Meter la altura real en `--barra-h` y usarla en
       `scroll-padding-top` y en `.menu-cat`.
-- [ ] **Enlaces por debajo de 24 px en táctil** (2.5.8). `.pie-datos a` (dirección, teléfono,
+- [x] **Enlaces por debajo de 24 px en táctil** (2.5.8). `.pie-datos a` (dirección, teléfono,
       Instagram) y `.hero-lugar` miden 23,8 px: el bloque `@media (pointer: coarse)` los olvidó.
       Es el teléfono del restaurante pulsado con el pulgar.
-- [ ] **Nav principal sin `aria-current` ni nombre de landmark.** Tres `<nav>` y solo dos tienen
+- [x] **Nav principal sin `aria-current` ni nombre de landmark.** Tres `<nav>` y solo dos tienen
       nombre. Añadir `aria-label` y `aria-current="page"` / `"location"`.
-- [ ] **Selector de idioma: foco perdido al elegir, no cierra con Escape ni al salir con Tab**,
+- [x] **Selector de idioma: foco perdido al elegir, no cierra con Escape ni al salir con Tab**,
       y `aria-expanded` se queda desincronizado. Además el `aria-label` tapa el texto visible, así
       que el lector no dice el idioma actual.
-- [ ] **Sin enlace de salto al contenido** (2.4.1). No es incumplimiento estricto (hay
+- [x] **Sin enlace de salto al contenido** (2.4.1). No es incumplimiento estricto (hay
       landmarks), pero en `/carta` un usuario de teclado vidente pasa ~15 paradas antes del
       primer plato.
-- [ ] **Reveal por plato escalonado en móvil.** `components.css:444-448`: hasta 1,2 s por
+- [x] **Reveal por plato escalonado en móvil.** `components.css:444-448`: hasta 1,2 s por
       capítulo. La exención `pointer: coarse` de `global.css:143` cubre `.reveal` pero no
       `.plato`.
-- [ ] **Alérgenos a 13 px con `opacity: .82`.** 55 de los 67 platos la llevan y es información
+- [x] **Alérgenos a 13 px con `opacity: .82`.** 55 de los 67 platos la llevan y es información
       legalmente relevante; al sol es lo primero que desaparece. A `.9rem` y `opacity: 1`.
 - [ ] **La carta es la pantalla oscura, y es la que se lee en la terraza.** La portada es clara y
       `/carta` es `.oscuro`: al sol una pantalla oscura hace de espejo. Valorar variante «papel»
@@ -140,9 +150,9 @@ conviene confirmarlo al abordarlo.
       `select` más lento antes de aplicar nada y abre el canal realtime para todos los
       visitantes; si lo publicado difiere de `cartaBase`, la carta salta a mitad de lectura. Una
       sola consulta `.in('key', [...])` y realtime solo cuando `admin`.
-- [ ] **`scrollTo(0,0)` animado al entrar en `/carta`** (`Carta.jsx:215`) con
+- [x] **`scrollTo(0,0)` animado al entrar en `/carta`** (`Carta.jsx:215`) con
       `scroll-behavior: smooth` global. Pasar a `behavior: 'instant'`.
-- [ ] **El PDF lleva el teléfono «de fábrica».** `exportarPdf.js:8,70` usa `CONTACTO` de
+- [x] **El PDF lleva el teléfono «de fábrica».** `exportarPdf.js:8,70` usa `CONTACTO` de
       `casa.js` y `Carta.jsx:254` no le pasa el contacto editado: si Nacho cambia el teléfono, el
       PDF de las mesas sigue con el viejo.
 - [ ] **Escala tipográfica con tamaños casi iguales.** Seis tamaños en 2,5 px por abajo
@@ -180,7 +190,7 @@ conviene confirmarlo al abordarlo.
 - [ ] Radios sin escala: 6/8/9/14/16/999. Para una estética de lámina, casi recto (`--r: 3px`).
 - [ ] `--abierto: #5fd4a0` es el único color fuera de paleta y a 8 px roza el turquesa de
       chiringuito, que es anti-referencia explícita. Y `latido` anima `box-shadow`.
-- [ ] Se animan propiedades de layout: `transition: height` en `.nav` (`:8`, la altura nunca
+- [x] Se animan propiedades de layout: `transition: height` en `.nav` (`:8`, la altura nunca
       cambia) y `top` en `.burger span` (`:43`).
 - [ ] Fade-up universal de 28 px / 0,9 s en todas las secciones (`global.css:141`). A 10 px y
       .55s, o solo opacidad: las láminas ya tienen su entrada de imprenta, que es la buena.
@@ -188,7 +198,7 @@ conviene confirmarlo al abordarlo.
       «Ven a vernos» no añaden nada.
 - [ ] Chips de la carta como `<button>` en vez de `<a href="#id">`: funcionarían sin JS y saldrían
       en la lista de enlaces del lector.
-- [ ] `scrollTo smooth` sin comprobar `prefers-reduced-motion` en `Nav.jsx:91` (Home y Carta sí
+- [x] `scrollTo smooth` sin comprobar `prefers-reduced-motion` en `Nav.jsx:91` (Home y Carta sí
       lo comprueban).
 - [ ] Fila de cabecera `aria-hidden` dentro de la `<ul>` de platos: el lector cuenta un elemento
       de más.
@@ -197,10 +207,10 @@ conviene confirmarlo al abordarlo.
 - [ ] Título de pestaña y meta description solo en español en la portada: `Home.jsx` no llama a
       `useTitulo`.
 - [ ] `--t-xs` = 11,5 px en menú y botones, `.7rem` en pies de foto: para mayores al sol, ≥.8rem.
-- [ ] `og:image` apunta al favicon y con URL relativa (`index.html:10`): al compartir por WhatsApp
+- [x] `og:image` apunta al favicon y con URL relativa (`index.html:10`): al compartir por WhatsApp
       sale un icono diminuto. Hacer una imagen de 1200×630 y URL absoluta. Falta `og:url`,
       `og:type` y `twitter:card`. **(verificado)**
-- [ ] Sin JSON-LD de `Restaurant` (horario, dirección, teléfono, carta): es el dato que más ayuda
+- [x] Sin JSON-LD de `Restaurant` (horario, dirección, teléfono, carta): es el dato que más ayuda
       a un restaurante local en búsquedas. **(verificado)**
 - [ ] Logo PNG de 68 KB en tres sitios: pasar a SVG o WebP.
 - [ ] Líneas de cuerpo a ~85 ch en las páginas legales (`components.css:512`): `min(66ch, ...)`.
@@ -227,11 +237,10 @@ conviene confirmarlo al abordarlo.
 
 Viene de antes de la auditoría.
 
-- [ ] **Transferir los proyectos de Vercel** de la cuenta del instituto
-      (`team_j2nsW6SuTxAU9i49pjp92e0S`) a `villorinaangelandres@gmail.com`:
-      `casatere` (`prj_w7O3DgjwxqP0vqItaksa8wWpDQpM`) y `el-bocadito`
-      (`prj_umU3unMXzsqeiGkyoZQF16ePlzwo`). Ruta elegida: transferencia oficial
-      (`POST /projects/{id}/transfer-request` → claim URL), no recrear.
+- [ ] **Transferir los proyectos de Vercel** (`casatere` y `el-bocadito`) de la cuenta del
+      instituto a la personal. Ruta elegida: transferencia oficial
+      (`POST /projects/{id}/transfer-request` → claim URL), no recrear. Los IDs de proyecto y de
+      equipo no se anotan aquí porque el repo es público.
 - [ ] **Mover los dominios aparte**: los comprados *en* Vercel no viajan con el proyecto
       (`vercel domains move <dominio> villorinaangelandres-gmailcoms-projects`).
 - [ ] Tras la transferencia: `vercel login` con la cuenta de gmail y `vercel link` en las dos

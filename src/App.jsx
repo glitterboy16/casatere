@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Toaster } from 'react-hot-toast'
 import { AdminProvider } from './admin/AdminContext'
 import Nav from './components/Nav'
@@ -9,6 +10,7 @@ import Carta from './pages/Carta'
 import { AvisoLegal, Privacidad, PoliticaCookies } from './pages/Legal'
 
 export default function App() {
+  const { t } = useTranslation()
   return (
     <AdminProvider>
       <Toaster
@@ -28,8 +30,14 @@ export default function App() {
           error: { iconTheme: { primary: '#E8A35A', secondary: '#021E50' } },
         }}
       />
+      {/* Primera parada del tabulador: en /carta, llegar al primer plato con
+          teclado son si no ~15 pulsaciones (menú + pestañas + capítulos). */}
+      <a className="saltar" href="#contenido">{t('nav.saltar')}</a>
       <Nav />
-      <main>
+      {/* Antes del contenido para que con teclado no haya que recorrer toda la
+          página hasta los botones de la decisión. */}
+      <CookieBanner />
+      <main id="contenido" tabIndex={-1}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/carta" element={<Carta />} />
@@ -40,7 +48,6 @@ export default function App() {
         </Routes>
       </main>
       <Footer />
-      <CookieBanner />
     </AdminProvider>
   )
 }

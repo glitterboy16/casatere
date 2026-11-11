@@ -50,7 +50,10 @@ async function cargarRecursos() {
   return recursos
 }
 
-export async function exportarCartaPdf(carta, lang) {
+// `contacto` llega del contexto de edición: si Nacho cambia el teléfono desde
+// la web, el PDF que imprime para las mesas tiene que llevar el nuevo, no el
+// que está escrito en data/casa.js.
+export async function exportarCartaPdf(carta, lang, contacto = CONTACTO) {
   const L = (v) => (v && typeof v === 'object' ? v[lang] || v.es : v)
   const tr = TRADUCCIONES[lang] ?? es
   const r = await cargarRecursos()
@@ -67,7 +70,7 @@ export async function exportarCartaPdf(carta, lang) {
 
   const pie = () => {
     doc.setFont('Montserrat', 'normal').setFontSize(6.8).setTextColor(...NIEBLA).setCharSpace(0.7)
-    doc.text(`CASA TERE · ${CONTACTO.direccion.toUpperCase()} · PLAYA HONDA · ${CONTACTO.telefono}`, A4.w / 2, A4.h - 11, { align: 'center' })
+    doc.text(`CASA TERE · ${contacto.direccion.toUpperCase()} · PLAYA HONDA · ${contacto.telefono}`, A4.w / 2, A4.h - 11, { align: 'center' })
     doc.setCharSpace(0)
   }
 

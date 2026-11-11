@@ -212,7 +212,9 @@ export default function Carta() {
 
   // Entrada directa a una categoría (/carta#pescados) o arriba del todo
   useEffect(() => {
-    if (!hash) { window.scrollTo(0, 0); return }
+    // 'instant': con scroll-behavior:smooth global, un scrollTo(0,0) al entrar
+    // desde media portada se anima por encima de la carta recién montada.
+    if (!hash) { window.scrollTo({ top: 0, behavior: 'instant' }); return }
     const el = document.querySelector(hash)
     if (el) setTimeout(() => el.scrollIntoView(), 60)
   }, [hash])
@@ -251,7 +253,7 @@ export default function Carta() {
     setExportando(true)
     try {
       const { exportarCartaPdf } = await import('../admin/exportarPdf')
-      await toast.promise(exportarCartaPdf(datos, lang), {
+      await toast.promise(exportarCartaPdf(datos, lang, contacto), {
         loading: 'Generando PDF…',
         success: 'Carta exportada en PDF',
         error: 'No se pudo generar el PDF',

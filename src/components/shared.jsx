@@ -23,7 +23,11 @@ export function useReveal() {
           }
         })
       },
-      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+      // threshold en 0, no en una fracción: el porcentaje se mide sobre la
+      // altura del elemento, así que un capítulo más alto que la pantalla no
+      // llegaría nunca al umbral y se quedaría en opacity 0 para siempre.
+      // El margen inferior negativo es el que retrasa la entrada.
+      { threshold: 0, rootMargin: '0px 0px -12% 0px' }
     )
     io.observe(el)
     return () => io.disconnect()

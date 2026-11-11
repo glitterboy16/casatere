@@ -13,6 +13,8 @@ export const es = {
     idioma: 'Cambiar idioma',
     abrir: 'Abrir menú',
     cerrar: 'Cerrar menú',
+    principal: 'Navegación principal',
+    saltar: 'Saltar al contenido',
   },
   hero: {
     titulo: "Casa Tere, restaurante en Playa Honda, Lanzarote",
@@ -114,6 +116,8 @@ export const en = {
     idioma: 'Change language',
     abrir: 'Open menu',
     cerrar: 'Close menu',
+    principal: 'Main navigation',
+    saltar: 'Skip to content',
   },
   hero: {
     titulo: "Casa Tere, restaurant in Playa Honda, Lanzarote",
@@ -215,6 +219,8 @@ export const de = {
     idioma: 'Sprache ändern',
     abrir: 'Menü öffnen',
     cerrar: 'Menü schließen',
+    principal: 'Hauptnavigation',
+    saltar: 'Zum Inhalt springen',
   },
   hero: {
     titulo: "Casa Tere, Restaurant in Playa Honda, Lanzarote",
@@ -316,6 +322,8 @@ export const fr = {
     idioma: 'Changer de langue',
     abrir: 'Ouvrir le menu',
     cerrar: 'Fermer le menu',
+    principal: 'Navigation principale',
+    saltar: 'Aller au contenu',
   },
   hero: {
     titulo: "Casa Tere, restaurant à Playa Honda, Lanzarote",
@@ -417,6 +425,8 @@ export const it = {
     idioma: 'Cambia lingua',
     abrir: 'Apri menù',
     cerrar: 'Chiudi menù',
+    principal: 'Navigazione principale',
+    saltar: 'Vai al contenuto',
   },
   hero: {
     titulo: "Casa Tere, ristorante a Playa Honda, Lanzarote",
